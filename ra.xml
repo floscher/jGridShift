@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE connector PUBLIC '-//Sun Microsystems, Inc.//DTD Connector 1.0//EN' 'http://java.sun.com/dtd/connector_1_0.dtd'>
+
+<connector>
+    <display-name>jGridShiftAdapter</display-name>
+    <vendor-name>Objectix Pty Ltd</vendor-name>
+    <spec-version>1.0</spec-version>
+    <eis-type>jGridShift</eis-type>
+    <version>1.0</version>
+    <license>
+    	<description>LGPL</description>
+    	<license-required>false</license-required>
+    </license>
+    <resourceadapter>
+        <managedconnectionfactory-class>au.com.objectix.jgridshift.jca.ManagedConnectionFactoryImpl</managedconnectionfactory-class>
+        <connectionfactory-interface>au.com.objectix.jgridshift.jca.GridShiftConnectionFactory</connectionfactory-interface>
+        <connectionfactory-impl-class>au.com.objectix.jgridshift.jca.ConnectionFactoryImpl</connectionfactory-impl-class>
+        <connection-interface>au.com.objectix.jgridshift.jca.GridShiftConnection</connection-interface>
+        <connection-impl-class>au.com.objectix.jgridshift.jca.GridShiftConnectionImpl</connection-impl-class>
+        <transaction-support>NoTransaction</transaction-support>
+        <reauthentication-support>false</reauthentication-support>
+    </resourceadapter>
+</connector>

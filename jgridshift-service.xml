@@ -1,0 +1,55 @@
+  <!-- ==================================================================== -->
+  <!-- ConnectionManager setup for jGridShift Resource Adapter           -->
+  <!-- Add jgridshift.rar to the deploy folder in addition to this file        -->
+  <!-- ==================================================================== -->
+
+<server>
+  <mbean code="org.jboss.resource.connectionmanager.NoTxConnectionManager"
+    name="jboss.jca:service=NoTxCM,name=jgridshift">
+    <attribute name="JndiName">ra/jgridshift</attribute>
+    <depends>jboss.jca:service=RARDeployer</depends>
+
+    <depends optional-attribute-name="ManagedConnectionPool">
+      <mbean code="org.jboss.resource.connectionmanager.JBossManagedConnectionPool"
+      name="jboss.jca:service=NoTxPool,name=jgridshift">
+      <depends optional-attribute-name="ManagedConnectionFactoryName">
+        <mbean code="org.jboss.resource.connectionmanager.RARDeployment"
+          name="jboss.jca:service=NoTxPF,name=jgridshift">
+  
+          <depends optional-attribute-name="OldRarDeployment">
+          jboss.jca:service=RARDeployment,name=jGridShiftAdapter
+          </depends>
+  
+  
+          <attribute name="ManagedConnectionFactoryProperties">
+               <properties>
+                  <config-property>
+                     <config-property-name>DataSource</config-property-name>
+                     <config-property-type>java.lang.String</config-property-type>
+                     <config-property-value>RandomFile</config-property-value>
+                  </config-property>
+                  <config-property>
+                     <config-property-name>GridShiftFile</config-property-name>
+                     <config-property-type>java.lang.String</config-property-type>
+                     <config-property-value>c:/Apps/GDA/A66.gsb</config-property-value>
+                  </config-property>
+               </properties>
+          </attribute>
+  
+        </mbean>
+      </depends>
+      <attribute name="MinSize">0</attribute>
+      <attribute name="MaxSize">10</attribute>
+      <attribute name="BlockingTimeoutMillis">5000</attribute>
+      <attribute name="IdleTimeoutMinutes">30</attribute>
+      <attribute name="Criteria">ByContainer</attribute>
+      </mbean>
+    </depends>
+    <depends optional-attribute-name="CachedConnectionManager">
+    jboss.jca:service=CachedConnectionManager
+    </depends>
+    <depends optional-attribute-name="JaasSecurityManagerService">
+    jboss.security:service=JaasSecurityManager
+    </depends>
+  </mbean>
+</server>
