@@ -1,0 +1,72 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+
+version = '1.0'
+sourceCompatibility = '1.7'
+
+sourceSets {
+  main
+  gui
+}
+
+repositories {
+  mavenCentral();
+}
+
+dependencies {
+  compile 'javax:javaee-api:7.0'
+  compile 'org.apache.axis:axis:1.4'
+}
+
+task mainZip(type: Zip) {
+  doFirst {
+    copy {
+      from 'ra.xml'
+      into "$buildDir/tmp/mainZip/META-INF"
+    }
+    jar.manifest.attributes 'Implementation-Title': project.name, 'Implementation-Version': version
+    jar.manifest.writeTo("$buildDir/tmp/mainZip/META-INF/MANIFEST.MF")
+  }
+
+  manifest {
+    attributes 'Implementation-Title': project.name,
+      'Implementation-Version': version
+  }
+  baseName = project.name
+  from sourceSets.main.output
+  from "$buildDir/tmp/mainZip"
+
+  exclude 'au/com/objectix/jgridshift/sample'
+}
+assemble.dependsOn mainZip
+
+task apiJar(type: Jar) {
+  manifest {
+    attributes 'Implementation-Title': project.name,
+      'Implementation-Version': version
+  }
+  baseName = project.name + '-api'
+  from sourceSets.main.output
+  exclude 'au/com/objectix/jgridshift/sample'
+  exclude 'au/com/objectix/jgridshift/jca'
+}
+jar.dependsOn apiJar
+
+task guiJar(type: Jar) {
+  manifest {
+    attributes 'Implementation-Title': project.name,
+      'Implementation-Version': version,
+      'Main-Class': 'au.com.objectix.jgridshift.sample.gui.Gui'
+  }
+  baseName = project.name + '-gui'
+  from sourceSets.main.output
+  from sourceSets.gui.output
+  exclude 'au/com/objectix/jgridshift/sample/session'
+  exclude 'au/com/objectix/jgridshift/sample/wsclient'
+  exclude 'au/com/objectix/jgridshift/jca'
+}
+jar.dependsOn guiJar
+
+task wrapper(type: Wrapper) {
+  gradleVersion = '2.3'
+}

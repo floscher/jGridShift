@@ -1,0 +1,10 @@
+/bin
+/build
+
+# Gradle
+/.gradle
+
+# Eclipse
+/.settings
+/.project
+/.classpath
