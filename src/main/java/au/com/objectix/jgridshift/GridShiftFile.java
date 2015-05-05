@@ -19,12 +19,14 @@
  */
 package au.com.objectix.jgridshift;
 
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Models the NTv2 format Grid Shift File and exposes methods to shift
@@ -45,7 +47,7 @@ import java.util.HashMap;
  * optional) into heap based Java arrays. This is the highest perfomance option,
  * and is useful for large volume transformations. Non-file data sources (eg
  * using an SQL Blob) are also supported through InputStream. The
- * RandonAccessFile option has a much smaller memory footprint as only the Sub
+ * RandomAccessFile option has a much smaller memory footprint as only the Sub
  * Grid headers are stored in memory, but transformation is slower because the
  * file must be read a number of times for each transformation.
  * </p><p>
@@ -85,6 +87,9 @@ public class GridShiftFile implements Serializable {
   // Objects that use RandomAccessFile data will fail if deserialized
   private transient RandomAccessFile raf;
 
+  /**
+   * Constructs a new {@code GridShiftFile}.
+   */
   public GridShiftFile() {
   }
 
@@ -98,7 +103,7 @@ public class GridShiftFile implements Serializable {
    *
    * @param in Grid Shift File InputStream
    * @param loadAccuracy is Accuracy data to be loaded as well as shift data?
-   * @throws Exception
+   * @throws IOException
    */
   public void loadGridShiftFile(InputStream in, boolean loadAccuracy) throws IOException {
     byte[] b8 = new byte[8];
@@ -107,7 +112,7 @@ public class GridShiftFile implements Serializable {
     toEllipsoid = "";
     topLevelSubGrid = null;
     in.read(b8);
-    overviewHeaderCountId = new String(b8);
+    overviewHeaderCountId = new String(b8, StandardCharsets.UTF_8);
     if (!"NUM_OREC".equals(overviewHeaderCountId)) {
       throw new IllegalArgumentException("Input file is not an NTv2 grid shift file");
     }
@@ -132,16 +137,16 @@ public class GridShiftFile implements Serializable {
     SubGrid[] subGrid = new SubGrid[subGridCount];
     in.read(b8);
     in.read(b8);
-    shiftType = new String(b8);
+    shiftType = new String(b8, StandardCharsets.UTF_8);
     in.read(b8);
     in.read(b8);
-    version = new String(b8);
+    version = new String(b8, StandardCharsets.UTF_8);
     in.read(b8);
     in.read(b8);
-    fromEllipsoid = new String(b8);
+    fromEllipsoid = new String(b8, StandardCharsets.UTF_8);
     in.read(b8);
     in.read(b8);
-    toEllipsoid = new String(b8);
+    toEllipsoid = new String(b8, StandardCharsets.UTF_8);
     in.read(b8);
     in.read(b8);
     fromSemiMajorAxis = Util.getDouble(b8, bigEndian);
@@ -250,28 +255,28 @@ public class GridShiftFile implements Serializable {
    */
   private SubGrid[] createSubGridTree(SubGrid[] subGrid) {
     int topLevelCount = 0;
-    HashMap subGridMap = new HashMap();
+    HashMap<String, List<SubGrid>> subGridMap = new HashMap<>();
     for (int i = 0; i < subGrid.length; i++) {
-      if (subGrid[i].getParentSubGridName().equalsIgnoreCase("NONE")) {
+      if ("NONE".equalsIgnoreCase(subGrid[i].getParentSubGridName())) {
         topLevelCount++;
       }
-      subGridMap.put(subGrid[i].getSubGridName(), new ArrayList());
+      subGridMap.put(subGrid[i].getSubGridName(), new ArrayList<SubGrid>());
     }
     SubGrid[] topLevelSubGrid = new SubGrid[topLevelCount];
     topLevelCount = 0;
     for (int i = 0; i < subGrid.length; i++) {
-      if (subGrid[i].getParentSubGridName().equalsIgnoreCase("NONE")) {
+      if ("NONE".equalsIgnoreCase(subGrid[i].getParentSubGridName())) {
         topLevelSubGrid[topLevelCount++] = subGrid[i];
       } else {
-        ArrayList parent = (ArrayList) subGridMap.get(subGrid[i].getParentSubGridName());
+        List<SubGrid> parent = subGridMap.get(subGrid[i].getParentSubGridName());
         parent.add(subGrid[i]);
       }
     }
     SubGrid[] nullArray = new SubGrid[0];
     for (int i = 0; i < subGrid.length; i++) {
-      ArrayList subSubGrids = (ArrayList) subGridMap.get(subGrid[i].getSubGridName());
-      if (subSubGrids.size() > 0) {
-        SubGrid[] subGridArray = (SubGrid[]) subSubGrids.toArray(nullArray);
+      List<SubGrid> subSubGrids = subGridMap.get(subGrid[i].getSubGridName());
+      if (!subSubGrids.isEmpty()) {
+        SubGrid[] subGridArray = subSubGrids.toArray(nullArray);
         subGrid[i].setSubGridArray(subGridArray);
       }
     }
@@ -364,8 +369,9 @@ public class GridShiftFile implements Serializable {
     }
   }
 
+  @Override
   public String toString() {
-    StringBuffer buf = new StringBuffer("Headers  : ");
+    StringBuilder buf = new StringBuilder("Headers  : ");
     buf.append(overviewHeaderCount);
     buf.append("\nSub Hdrs : ");
     buf.append(subGridHeaderCount);

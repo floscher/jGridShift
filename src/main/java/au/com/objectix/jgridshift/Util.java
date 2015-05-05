@@ -24,7 +24,7 @@ package au.com.objectix.jgridshift;
  *
  * @author Peter Yuill
  */
-public class Util {
+public final class Util {
 
   private Util() {
   }
@@ -81,7 +81,6 @@ public class Util {
     return Float.intBitsToFloat(i);
   }
 
-
   /**
    * Get a double from the first 8 bytes of a byte array,
    * in either Big Endian or Little Endian format.
@@ -112,7 +111,8 @@ public class Util {
     try {
       Class.forName("java.nio.channels.FileChannel");
       nioAvailable = true;
-    } catch (ClassNotFoundException cnfe) {}
+    } catch (NoClassDefFoundError | ClassNotFoundException cnfe) {
+    }
     return nioAvailable;
   }
 }

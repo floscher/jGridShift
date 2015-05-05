@@ -28,11 +28,13 @@ import java.io.Serializable;
  * <p>
  * All values are stored as Positive West Seconds, but accessors are also
  * provided for Positive East Degrees.
+ * </p>
  *
  * @author Peter Yuill
  */
 public class GridShift implements Serializable {
 
+  private static final long serialVersionUID = 1L;
   private static final double METRE_PER_SECOND = 2.0 * Math.PI * 6378137.0 / 3600.0 / 360.0;
   private static final double RADIANS_PER_SECOND = 2.0 * Math.PI / 3600.0 / 360.0;
   private double lon;
@@ -41,64 +43,74 @@ public class GridShift implements Serializable {
   private double latShift;
   private double lonAccuracy;
   private double latAccuracy;
-  boolean latAccuracyAvailable;
-  boolean lonAccuracyAvailable;
+  private boolean latAccuracyAvailable;
+  private boolean lonAccuracyAvailable;
   private String subGridName;
 
-  public GridShift() {
-  }
+  /**
+   * Constructs a new {@code NTV2GridShift}.
+   */
+  public GridShift() {}
 
   /**
-   * @return
+   * Data access function for latitude value
+   * @return latitude in seconds
    */
   public double getLatSeconds() {
     return lat;
   }
 
   /**
-   * @return
+   * Data access function for latitude value
+   * @return latitude in degree
    */
   public double getLatDegrees() {
     return lat / 3600.0;
   }
 
   /**
-   * @return
+   * Data access function for latitude shift value
+   * @return latitude shift in seconds
    */
   public double getLatShiftSeconds() {
     return latShift;
   }
 
   /**
-   * @return
+   * Data access function for latitude shift value
+   * @return latitude shift in degree
    */
   public double getLatShiftDegrees() {
     return latShift / 3600.0;
   }
 
   /**
-   * @return
+   * Data access function for already shifted latitude value
+   * @return shifted latitude in seconds
    */
   public double getShiftedLatSeconds() {
     return lat + latShift;
   }
 
   /**
-   * @return
+   * Data access function for already shifted latitude value
+   * @return shifted latitude in degree
    */
   public double getShiftedLatDegrees() {
     return (lat + latShift) / 3600.0;
   }
 
   /**
-   * @return
+   * Checks whether latitude accuracy is available or not
+   * @return <code>true</code> if latitude accuracy is available
    */
   public boolean isLatAccuracyAvailable() {
     return latAccuracyAvailable;
   }
 
   /**
-   * @return
+   * Data access function for latitude accuracy
+   * @return latitude accuracy in seconds
    */
   public double getLatAccuracySeconds() {
     if (!latAccuracyAvailable) {
@@ -108,7 +120,8 @@ public class GridShift implements Serializable {
   }
 
   /**
-   * @return
+   * Data access function for latitude accuracy
+   * @return latitude accuracy in degree
    */
   public double getLatAccuracyDegrees() {
     if (!latAccuracyAvailable) {
@@ -118,7 +131,8 @@ public class GridShift implements Serializable {
   }
 
   /**
-   * @return
+   * Data access function for latitude accuracy
+   * @return latitude accuracy in meter
    */
   public double getLatAccuracyMetres() {
     if (!latAccuracyAvailable) {
@@ -128,56 +142,64 @@ public class GridShift implements Serializable {
   }
 
   /**
-   * @return
+   * Data access function for longitude value, positive values in west direction
+   * @return longitude in seconds
    */
   public double getLonPositiveWestSeconds() {
     return lon;
   }
 
   /**
-   * @return
+   * Data access function for longitude value, positive values in east direction
+   * @return longitude in degree
    */
   public double getLonPositiveEastDegrees() {
     return lon / -3600.0;
   }
 
   /**
-   * @return
+   * Data access function for longitude shift value, positive values in west direction
+   * @return longitude shift in seconds
    */
   public double getLonShiftPositiveWestSeconds() {
     return lonShift;
   }
 
   /**
-   * @return
+   * Data access function for longitude shift value, positive values in east direction
+   * @return longitude shift in degree
    */
   public double getLonShiftPositiveEastDegrees() {
     return lonShift / -3600.0;
   }
 
   /**
-   * @return
+   * Data access function for shifted longitude value, positive values in west direction
+   * @return shifted longitude in seconds
    */
   public double getShiftedLonPositiveWestSeconds() {
     return lon + lonShift;
   }
 
   /**
-   * @return
+   * Data access function for shifted longitude value, positive values in east direction
+   * @return shifted longitude in degree
    */
   public double getShiftedLonPositiveEastDegrees() {
     return (lon + lonShift) / -3600.0;
   }
 
   /**
-   * @return
+   * Checks whether longitude accuracy is available or not
+   * @return <code>true</code> if longitude accuracy is available
    */
   public boolean isLonAccuracyAvailable() {
     return lonAccuracyAvailable;
   }
 
   /**
-   * @return
+   * Data access function for longitude accuracy
+   * @return longitude accuracy in seconds
    */
   public double getLonAccuracySeconds() {
     if (!lonAccuracyAvailable) {
@@ -187,7 +209,8 @@ public class GridShift implements Serializable {
   }
 
   /**
-   * @return
+   * Data access function for longitude accuracy
+   * @return longitude accuracy in degree
    */
   public double getLonAccuracyDegrees() {
     if (!lonAccuracyAvailable) {
@@ -197,7 +220,8 @@ public class GridShift implements Serializable {
   }
 
   /**
-   * @return
+   * Data access function for longitude accuracy
+   * @return longitude accuracy in meter
    */
   public double getLonAccuracyMetres() {
     if (!lonAccuracyAvailable) {
@@ -207,84 +231,96 @@ public class GridShift implements Serializable {
   }
 
   /**
-   * @param d
+   * Data store function for latitude
+   * @param d latitude value in seconds
    */
-  public void setLatSeconds(double d) {
+  public final void setLatSeconds(double d) {
     lat = d;
   }
 
   /**
-   * @param d
+   * Data store function for latitude
+   * @param d latitude value in degree
    */
-  public void setLatDegrees(double d) {
+  public final void setLatDegrees(double d) {
     lat = d * 3600.0;
   }
 
   /**
-   * @param b
+   * Data store function for latitude accuracy availability
+   * @param b availability of latitude accuracy
    */
-  public void setLatAccuracyAvailable(boolean b) {
+  public final void setLatAccuracyAvailable(boolean b) {
     latAccuracyAvailable = b;
   }
 
   /**
-   * @param d
+   * Data store function for latitude accuracy
+   * @param d latitude accuracy in seconds
    */
-  public void setLatAccuracySeconds(double d) {
+  public final void setLatAccuracySeconds(double d) {
     latAccuracy = d;
   }
 
   /**
-   * @param d
+   * Data store function for latitude shift
+   * @param d latitude shift in seconds
    */
-  public void setLatShiftSeconds(double d) {
+  public final void setLatShiftSeconds(double d) {
     latShift = d;
   }
 
   /**
-   * @param d
+   * Data store function for longitude
+   * @param d latitude value in seconds, west direction is positive
    */
-  public void setLonPositiveWestSeconds(double d) {
+  public final void setLonPositiveWestSeconds(double d) {
     lon = d;
   }
 
   /**
-   * @param d
+   * Data store function for longitude
+   * @param d latitude value in degree, est direction is positive
    */
-  public void setLonPositiveEastDegrees(double d) {
+  public final void setLonPositiveEastDegrees(double d) {
     lon = d * -3600.0;
   }
 
   /**
-   * @param b
+   * Data store function for longitude accuracy availability
+   * @param b availability of longitude accuracy
    */
-  public void setLonAccuracyAvailable(boolean b) {
+  public final void setLonAccuracyAvailable(boolean b) {
     lonAccuracyAvailable = b;
   }
 
   /**
-   * @param d
+   * Data store function for longitude accuracy
+   * @param d longitude accuracy in seconds
    */
-  public void setLonAccuracySeconds(double d) {
+  public final void setLonAccuracySeconds(double d) {
     lonAccuracy = d;
   }
 
   /**
-   * @param d
+   * Data store function for longitude shift value
+   * @param d longitude shift in seconds, west direction is positive
    */
-  public void setLonShiftPositiveWestSeconds(double d) {
+  public final void setLonShiftPositiveWestSeconds(double d) {
     lonShift = d;
   }
 
   /**
-   * @return
+   * Get the name of the sub grid
+   * @return name of the sub grid
    */
   public String getSubGridName() {
     return subGridName;
   }
 
   /**
-   * @param string
+   * Set the name of the sub grid
+   * @param string name of the sub grid
    */
   public void setSubGridName(String string) {
     subGridName = string;
@@ -292,8 +328,7 @@ public class GridShift implements Serializable {
 
   /**
    * Make this object a copy of the supplied GridShift
-   *
-   * @param gs
+   * @param gs grid to copy data from
    */
   public void copy(GridShift gs) {
     this.lon = gs.lon;
@@ -306,5 +341,4 @@ public class GridShift implements Serializable {
     this.lonAccuracyAvailable = gs.lonAccuracyAvailable;
     this.subGridName = gs.subGridName;
   }
-
 }

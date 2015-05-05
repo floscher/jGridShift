@@ -23,6 +23,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 
 /**
  * Models the NTv2 Sub Grid within a Grid Shift File
@@ -65,23 +67,23 @@ public class SubGrid implements Cloneable, Serializable {
    * @param in GridShiftFile InputStream
    * @param bigEndian is the file bigEndian?
    * @param loadAccuracy is the node Accuracy data to be loaded?
-   * @throws Exception
+   * @throws IOException
    */
   public SubGrid(InputStream in, boolean bigEndian, boolean loadAccuracy) throws IOException {
     byte[] b8 = new byte[8];
     byte[] b4 = new byte[4];
     in.read(b8);
     in.read(b8);
-    subGridName = new String(b8).trim();
+    subGridName = new String(b8, StandardCharsets.UTF_8).trim();
     in.read(b8);
     in.read(b8);
-    parentSubGridName = new String(b8).trim();
+    parentSubGridName = new String(b8, StandardCharsets.UTF_8).trim();
     in.read(b8);
     in.read(b8);
-    created = new String(b8);
+    created = new String(b8, StandardCharsets.UTF_8);
     in.read(b8);
     in.read(b8);
-    updated = new String(b8);
+    updated = new String(b8, StandardCharsets.UTF_8);
     in.read(b8);
     in.read(b8);
     minLat = Util.getDouble(b8, bigEndian);
@@ -116,19 +118,37 @@ public class SubGrid implements Cloneable, Serializable {
     }
 
     for (int i = 0; i < nodeCount; i++) {
-      in.read(b4);
-      latShift[i] = Util.getFloat(b4, bigEndian);
-      in.read(b4);
-      lonShift[i] = Util.getFloat(b4, bigEndian);
-      in.read(b4);
+      latShift[i] = Util.getFloat(readBytes(in, 4), bigEndian);
+      lonShift[i] = Util.getFloat(readBytes(in, 4), bigEndian);
+      b4 = readBytes(in, 4);
       if (loadAccuracy) {
         latAccuracy[i] = Util.getFloat(b4, bigEndian);
       }
-      in.read(b4);
+      b4 = readBytes(in, 4);
       if (loadAccuracy) {
         lonAccuracy[i] = Util.getFloat(b4, bigEndian);
       }
     }
+  }
+  /**
+   * Helper method for the constructor {@link #SubGrid(InputStream, boolean, boolean)}.
+   * It reads a number of bytes from an {@link InputStream} one byte after another.
+   *
+   * Read the grid file byte after byte. This is a workaround about a bug in
+   * certain VM which are not able to read byte blocks when the resource file is
+   * in a .jar file (Pieren)
+   * @param in the {@link InputStream} to read from
+   * @param numBytes the number of bytes to read
+   * @return the resulting byte-array
+   * @throws IOException
+   */
+  private byte[] readBytes(InputStream in, int numBytes) throws IOException {
+    int readBytes = 0;
+    byte[] result = new byte[numBytes];
+    while (readBytes <= numBytes-1) {
+      readBytes += in.read(result, readBytes, 1);
+    }
+    return result;
   }
 
   /**
@@ -204,9 +224,9 @@ public class SubGrid implements Cloneable, Serializable {
       if (subGrid == null) {
         return this;
       } else {
-        for (int i = 0; i < subGrid.length; i++) {
-          if (subGrid[i].isCoordWithin(lon, lat)) {
-            return subGrid[i].getSubGridForCoord(lon, lat);
+        for (SubGrid s : subGrid) {
+          if (s.isCoordWithin(lon, lat)) {
+            return s.getSubGridForCoord(lon, lat);
           }
         }
         return this;
@@ -226,11 +246,7 @@ public class SubGrid implements Cloneable, Serializable {
    * @return true or false
    */
   private boolean isCoordWithin(double lon, double lat) {
-    if ((lon >= minLon) && (lon < maxLon) && (lat >= minLat) && (lat < maxLat)) {
-      return true;
-    } else {
-      return false;
-    }
+    return (lon >= minLon) && (lon < maxLon) && (lat >= minLat) && (lat < maxLat);
   }
 
   /**
@@ -380,15 +396,20 @@ public class SubGrid implements Cloneable, Serializable {
    * @param subGrid
    */
   public void setSubGridArray(SubGrid[] subGrid) {
-    this.subGrid = subGrid;
+    this.subGrid = subGrid == null ? null : Arrays.copyOf(subGrid, subGrid.length);
   }
 
+  @Override
   public String toString() {
     return subGridName;
   }
 
+  /**
+   * Returns textual details about the sub grid.
+   * @return textual details about the sub grid
+   */
   public String getDetails() {
-    StringBuffer buf = new StringBuffer("Sub Grid : ");
+    StringBuilder buf = new StringBuilder("Sub Grid : ");
     buf.append(subGridName);
     buf.append("\nParent   : ");
     buf.append(parentSubGridName);
@@ -416,44 +437,49 @@ public class SubGrid implements Cloneable, Serializable {
   /**
    * Make a deep clone of this Sub Grid
    */
+  @Override
   public Object clone() {
     SubGrid clone = null;
     try {
       clone = (SubGrid)super.clone();
-    } catch (CloneNotSupportedException cnse) {
-    }
-    // Do a deep clone of the sub grids
-    if (subGrid != null) {
-      clone.subGrid = new SubGrid[subGrid.length];
-      for (int i = 0; i < subGrid.length; i++) {
-        clone.subGrid[i] = (SubGrid)subGrid[i].clone();
+      // Do a deep clone of the sub grids
+      if (subGrid != null) {
+        clone.subGrid = new SubGrid[subGrid.length];
+        for (int i = 0; i < subGrid.length; i++) {
+          clone.subGrid[i] = (SubGrid)subGrid[i].clone();
+        }
       }
+    } catch (CloneNotSupportedException cnse) {
     }
     return clone;
   }
   /**
-   * @return
+   * Get maximum latitude value
+   * @return maximum latitude
    */
   public double getMaxLat() {
     return maxLat;
   }
 
   /**
-   * @return
+   * Get maximum longitude value
+   * @return maximum longitude
    */
   public double getMaxLon() {
     return maxLon;
   }
 
   /**
-   * @return
+   * Get minimum latitude value
+   * @return minimum latitude
    */
   public double getMinLat() {
     return minLat;
   }
 
   /**
-   * @return
+   * Get minimum longitude value
+   * @return minimum longitude
    */
   public double getMinLon() {
     return minLon;
