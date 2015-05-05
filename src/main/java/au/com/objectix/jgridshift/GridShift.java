@@ -22,287 +22,289 @@ package au.com.objectix.jgridshift;
 import java.io.Serializable;
 
 /**
- * A value object for storing Longitude and Latitude of a point, the
- * Lon and Lat shift values to get from one datum to another, and the
- * Lon and Lat accuracy of the shift values.
- * <p>All values are stored as Positive West Seconds, but accessors
- * are also provided for Positive East Degrees.
- * 
+ * A value object for storing Longitude and Latitude of a point, the Lon and Lat
+ * shift values to get from one datum to another, and the Lon and Lat accuracy
+ * of the shift values.
+ * <p>
+ * All values are stored as Positive West Seconds, but accessors are also
+ * provided for Positive East Degrees.
+ *
  * @author Peter Yuill
  */
 public class GridShift implements Serializable {
-    
-    private static final double METRE_PER_SECOND = 2.0 * Math.PI * 6378137.0 / 3600.0 / 360.0;
-    private static final double RADIANS_PER_SECOND = 2.0 * Math.PI / 3600.0 / 360.0;
-    private double lon;
-    private double lat;
-    private double lonShift;
-    private double latShift;
-    private double lonAccuracy;
-    private double latAccuracy;
-    boolean latAccuracyAvailable;
-    boolean lonAccuracyAvailable;
-    private String subGridName;
-    
-    public GridShift() {
-    }
 
-    /**
-     * @return
-     */
-    public double getLatSeconds() {
-        return lat;
-    }
+  private static final double METRE_PER_SECOND = 2.0 * Math.PI * 6378137.0 / 3600.0 / 360.0;
+  private static final double RADIANS_PER_SECOND = 2.0 * Math.PI / 3600.0 / 360.0;
+  private double lon;
+  private double lat;
+  private double lonShift;
+  private double latShift;
+  private double lonAccuracy;
+  private double latAccuracy;
+  boolean latAccuracyAvailable;
+  boolean lonAccuracyAvailable;
+  private String subGridName;
 
-    /**
-     * @return
-     */
-    public double getLatDegrees() {
-        return lat / 3600.0;
-    }
+  public GridShift() {
+  }
 
-    /**
-     * @return
-     */
-    public double getLatShiftSeconds() {
-        return latShift;
-    }
+  /**
+   * @return
+   */
+  public double getLatSeconds() {
+    return lat;
+  }
 
-    /**
-     * @return
-     */
-    public double getLatShiftDegrees() {
-        return latShift / 3600.0;
-    }
+  /**
+   * @return
+   */
+  public double getLatDegrees() {
+    return lat / 3600.0;
+  }
 
-    /**
-     * @return
-     */
-    public double getShiftedLatSeconds() {
-        return lat + latShift;
-    }
+  /**
+   * @return
+   */
+  public double getLatShiftSeconds() {
+    return latShift;
+  }
 
-    /**
-     * @return
-     */
-    public double getShiftedLatDegrees() {
-        return (lat + latShift) / 3600.0;
-    }
+  /**
+   * @return
+   */
+  public double getLatShiftDegrees() {
+    return latShift / 3600.0;
+  }
 
-    /**
-     * @return
-     */
-    public boolean isLatAccuracyAvailable() {
-        return latAccuracyAvailable;
-    }
+  /**
+   * @return
+   */
+  public double getShiftedLatSeconds() {
+    return lat + latShift;
+  }
 
-    /**
-     * @return
-     */
-    public double getLatAccuracySeconds() {
-        if (!latAccuracyAvailable) {
-            throw new IllegalStateException("Latitude Accuracy not available");
-        }
-        return latAccuracy;
-    }
+  /**
+   * @return
+   */
+  public double getShiftedLatDegrees() {
+    return (lat + latShift) / 3600.0;
+  }
 
-    /**
-     * @return
-     */
-    public double getLatAccuracyDegrees() {
-        if (!latAccuracyAvailable) {
-            throw new IllegalStateException("Latitude Accuracy not available");
-        }
-        return latAccuracy / 3600.0;
-    }
+  /**
+   * @return
+   */
+  public boolean isLatAccuracyAvailable() {
+    return latAccuracyAvailable;
+  }
 
-    /**
-     * @return
-     */
-    public double getLatAccuracyMetres() {
-        if (!latAccuracyAvailable) {
-            throw new IllegalStateException("Latitude Accuracy not available");
-        }
-        return latAccuracy * METRE_PER_SECOND;
+  /**
+   * @return
+   */
+  public double getLatAccuracySeconds() {
+    if (!latAccuracyAvailable) {
+      throw new IllegalStateException("Latitude Accuracy not available");
     }
+    return latAccuracy;
+  }
 
-    /**
-     * @return
-     */
-    public double getLonPositiveWestSeconds() {
-        return lon;
+  /**
+   * @return
+   */
+  public double getLatAccuracyDegrees() {
+    if (!latAccuracyAvailable) {
+      throw new IllegalStateException("Latitude Accuracy not available");
     }
+    return latAccuracy / 3600.0;
+  }
 
-    /**
-     * @return
-     */
-    public double getLonPositiveEastDegrees() {
-        return lon / -3600.0;
+  /**
+   * @return
+   */
+  public double getLatAccuracyMetres() {
+    if (!latAccuracyAvailable) {
+      throw new IllegalStateException("Latitude Accuracy not available");
     }
+    return latAccuracy * METRE_PER_SECOND;
+  }
 
-    /**
-     * @return
-     */
-    public double getLonShiftPositiveWestSeconds() {
-        return lonShift;
-    }
+  /**
+   * @return
+   */
+  public double getLonPositiveWestSeconds() {
+    return lon;
+  }
 
-    /**
-     * @return
-     */
-    public double getLonShiftPositiveEastDegrees() {
-        return lonShift / -3600.0;
-    }
+  /**
+   * @return
+   */
+  public double getLonPositiveEastDegrees() {
+    return lon / -3600.0;
+  }
 
-    /**
-     * @return
-     */
-    public double getShiftedLonPositiveWestSeconds() {
-        return lon + lonShift;
-    }
+  /**
+   * @return
+   */
+  public double getLonShiftPositiveWestSeconds() {
+    return lonShift;
+  }
 
-    /**
-     * @return
-     */
-    public double getShiftedLonPositiveEastDegrees() {
-        return (lon + lonShift) / -3600.0;
-    }
+  /**
+   * @return
+   */
+  public double getLonShiftPositiveEastDegrees() {
+    return lonShift / -3600.0;
+  }
 
-    /**
-     * @return
-     */
-    public boolean isLonAccuracyAvailable() {
-        return lonAccuracyAvailable;
-    }
+  /**
+   * @return
+   */
+  public double getShiftedLonPositiveWestSeconds() {
+    return lon + lonShift;
+  }
 
-    /**
-     * @return
-     */
-    public double getLonAccuracySeconds() {
-        if (!lonAccuracyAvailable) {
-            throw new IllegalStateException("Longitude Accuracy not available");
-        }
-        return lonAccuracy;
-    }
+  /**
+   * @return
+   */
+  public double getShiftedLonPositiveEastDegrees() {
+    return (lon + lonShift) / -3600.0;
+  }
 
-    /**
-     * @return
-     */
-    public double getLonAccuracyDegrees() {
-        if (!lonAccuracyAvailable) {
-            throw new IllegalStateException("Longitude Accuracy not available");
-        }
-        return lonAccuracy / 3600.0;
-    }
+  /**
+   * @return
+   */
+  public boolean isLonAccuracyAvailable() {
+    return lonAccuracyAvailable;
+  }
 
-    /**
-     * @return
-     */
-    public double getLonAccuracyMetres() {
-        if (!lonAccuracyAvailable) {
-            throw new IllegalStateException("Longitude Accuracy not available");
-        }
-        return lonAccuracy * METRE_PER_SECOND * Math.cos(RADIANS_PER_SECOND * lat);
+  /**
+   * @return
+   */
+  public double getLonAccuracySeconds() {
+    if (!lonAccuracyAvailable) {
+      throw new IllegalStateException("Longitude Accuracy not available");
     }
+    return lonAccuracy;
+  }
 
-    /**
-     * @param d
-     */
-    public void setLatSeconds(double d) {
-        lat = d;
+  /**
+   * @return
+   */
+  public double getLonAccuracyDegrees() {
+    if (!lonAccuracyAvailable) {
+      throw new IllegalStateException("Longitude Accuracy not available");
     }
+    return lonAccuracy / 3600.0;
+  }
 
-    /**
-     * @param d
-     */
-    public void setLatDegrees(double d) {
-        lat = d * 3600.0;
+  /**
+   * @return
+   */
+  public double getLonAccuracyMetres() {
+    if (!lonAccuracyAvailable) {
+      throw new IllegalStateException("Longitude Accuracy not available");
     }
+    return lonAccuracy * METRE_PER_SECOND * Math.cos(RADIANS_PER_SECOND * lat);
+  }
 
-    /**
-     * @param b
-     */
-    public void setLatAccuracyAvailable(boolean b) {
-        latAccuracyAvailable = b;
-    }
+  /**
+   * @param d
+   */
+  public void setLatSeconds(double d) {
+    lat = d;
+  }
 
-    /**
-     * @param d
-     */
-    public void setLatAccuracySeconds(double d) {
-        latAccuracy = d;
-    }
+  /**
+   * @param d
+   */
+  public void setLatDegrees(double d) {
+    lat = d * 3600.0;
+  }
 
-    /**
-     * @param d
-     */
-    public void setLatShiftSeconds(double d) {
-        latShift = d;
-    }
+  /**
+   * @param b
+   */
+  public void setLatAccuracyAvailable(boolean b) {
+    latAccuracyAvailable = b;
+  }
 
-    /**
-     * @param d
-     */
-    public void setLonPositiveWestSeconds(double d) {
-        lon = d;
-    }
+  /**
+   * @param d
+   */
+  public void setLatAccuracySeconds(double d) {
+    latAccuracy = d;
+  }
 
-    /**
-     * @param d
-     */
-    public void setLonPositiveEastDegrees(double d) {
-        lon = d * -3600.0;
-    }
+  /**
+   * @param d
+   */
+  public void setLatShiftSeconds(double d) {
+    latShift = d;
+  }
 
-    /**
-     * @param b
-     */
-    public void setLonAccuracyAvailable(boolean b) {
-        lonAccuracyAvailable = b;
-    }
+  /**
+   * @param d
+   */
+  public void setLonPositiveWestSeconds(double d) {
+    lon = d;
+  }
 
-    /**
-     * @param d
-     */
-    public void setLonAccuracySeconds(double d) {
-        lonAccuracy = d;
-    }
+  /**
+   * @param d
+   */
+  public void setLonPositiveEastDegrees(double d) {
+    lon = d * -3600.0;
+  }
 
-    /**
-     * @param d
-     */
-    public void setLonShiftPositiveWestSeconds(double d) {
-        lonShift = d;
-    }
+  /**
+   * @param b
+   */
+  public void setLonAccuracyAvailable(boolean b) {
+    lonAccuracyAvailable = b;
+  }
 
-    /**
-     * @return
-     */
-    public String getSubGridName() {
-        return subGridName;
-    }
+  /**
+   * @param d
+   */
+  public void setLonAccuracySeconds(double d) {
+    lonAccuracy = d;
+  }
 
-    /**
-     * @param string
-     */
-    public void setSubGridName(String string) {
-        subGridName = string;
-    }
-    
-    /**
-     * Make this object a copy of the supplied GridShift
-     * @param gs
-     */
-    public void copy(GridShift gs) {
-        this.lon = gs.lon;
-        this.lat = gs.lat;
-        this.lonShift = gs.lonShift;
-        this.latShift = gs.latShift;
-        this.lonAccuracy = gs.lonAccuracy;
-        this.latAccuracy = gs.latAccuracy;
-        this.latAccuracyAvailable = gs.latAccuracyAvailable;
-        this.lonAccuracyAvailable = gs.lonAccuracyAvailable;
-        this.subGridName = gs.subGridName;
-    }
+  /**
+   * @param d
+   */
+  public void setLonShiftPositiveWestSeconds(double d) {
+    lonShift = d;
+  }
+
+  /**
+   * @return
+   */
+  public String getSubGridName() {
+    return subGridName;
+  }
+
+  /**
+   * @param string
+   */
+  public void setSubGridName(String string) {
+    subGridName = string;
+  }
+
+  /**
+   * Make this object a copy of the supplied GridShift
+   *
+   * @param gs
+   */
+  public void copy(GridShift gs) {
+    this.lon = gs.lon;
+    this.lat = gs.lat;
+    this.lonShift = gs.lonShift;
+    this.latShift = gs.latShift;
+    this.lonAccuracy = gs.lonAccuracy;
+    this.latAccuracy = gs.latAccuracy;
+    this.latAccuracyAvailable = gs.latAccuracyAvailable;
+    this.lonAccuracyAvailable = gs.lonAccuracyAvailable;
+    this.subGridName = gs.subGridName;
+  }
 
 }

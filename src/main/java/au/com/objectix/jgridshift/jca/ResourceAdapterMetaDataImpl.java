@@ -23,49 +23,39 @@ import javax.resource.cci.ResourceAdapterMetaData;
 
 public class ResourceAdapterMetaDataImpl implements ResourceAdapterMetaData {
 
-    public String getAdapterName() {
+  public String getAdapterName() {
+    return "jgridshift Adapter";
+  }
 
-        return "jgridshift Adapter";
-    }
+  public String getAdapterShortDescription() {
+    return "A resource adapter for jgridshift";
+  }
 
-    public String getAdapterShortDescription() {
+  public String getAdapterVendorName() {
+    return "Objectix Pty Ltd";
+  }
 
-        return "A resource adapter for jgridshift";
-    }
+  public String getAdapterVersion() {
+    return "1.0";
+  }
 
-    public String getAdapterVendorName() {
+  public String[] getInteractionSpecsSupported() {
+    return new String[] {GridShiftInteractionSpec.class.getName()};
+  }
 
-        return "Objectix Pty Ltd";
-    }
+  public String getSpecVersion() {
+    return "1.0";
+  }
 
-	public String getAdapterVersion() {
+  public boolean supportsExecuteWithInputAndOutputRecord() {
+    return true;
+  }
 
-		return "1.0";
-	}
+  public boolean supportsExecuteWithInputRecordOnly() {
+    return true;
+  }
 
-    public String[] getInteractionSpecsSupported() {
-        
-        return new String[] {GridShiftInteractionSpec.class.getName()};
-    }
-
-	public String getSpecVersion() {
-
-		return "1.0";
-	}
-
-	public boolean supportsExecuteWithInputAndOutputRecord() {
-		
-		return true;
-	}
-
-	public boolean supportsExecuteWithInputRecordOnly() {
-		
-		return true;
-	}
-
-	public boolean supportsLocalTransactionDemarcation() {
-
-		return false;
-	}
-
+  public boolean supportsLocalTransactionDemarcation() {
+    return false;
+  }
 }

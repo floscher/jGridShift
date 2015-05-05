@@ -21,31 +21,28 @@ package au.com.objectix.jgridshift.jca;
 
 import javax.resource.ResourceException;
 import javax.resource.spi.ManagedConnectionMetaData;
-import javax.resource.cci.ConnectionMetaData;
 
 public class ManagedConnectionMetaDataImpl implements ManagedConnectionMetaData {
 
-    private String userName;
-    
-    public ManagedConnectionMetaDataImpl(String userName) {
-        this.userName = userName;
-    }
-    
-	public String getEISProductName() throws ResourceException {        
-        return "jgridshift";
-	}
+  private String userName;
 
-	public String getEISProductVersion() throws ResourceException {
-        return "1.0";
-	}
+  public ManagedConnectionMetaDataImpl(String userName) {
+    this.userName = userName;
+  }
 
-	public int getMaxConnections() throws ResourceException {
+  public String getEISProductName() throws ResourceException {
+    return "jgridshift";
+  }
 
-		return 0;
-	}
+  public String getEISProductVersion() throws ResourceException {
+    return "1.0";
+  }
 
-	public String getUserName() throws ResourceException {
-        return userName;
-	}
+  public int getMaxConnections() throws ResourceException {
+    return 0;
+  }
 
+  public String getUserName() throws ResourceException {
+    return userName;
+  }
 }

@@ -21,38 +21,38 @@ package au.com.objectix.jgridshift.sample.session;
 
 /**
  * The Coordinate object that is referenced by the JGridShiftService
- * 
+ *
  * @jboss-net:xml-schema urn="jgridshift:Coordinate"
  */
 public class Coordinate implements java.io.Serializable {
-    private double latSeconds;
-    private double lonPositiveWestSeconds;
-    /**
-     * @return
-     */
-    public double getLatSeconds() {
-        return latSeconds;
-    }
+  private static final long serialVersionUID = 1942910817312188092L;
+  private double latSeconds;
+  private double lonPositiveWestSeconds;
+  /**
+   * @return
+   */
+  public double getLatSeconds() {
+    return latSeconds;
+  }
 
-    /**
-     * @return
-     */
-    public double getLonPositiveWestSeconds() {
-        return lonPositiveWestSeconds;
-    }
+  /**
+   * @return
+   */
+  public double getLonPositiveWestSeconds() {
+    return lonPositiveWestSeconds;
+  }
 
-    /**
-     * @param d
-     */
-    public void setLatSeconds(double d) {
-        latSeconds = d;
-    }
+  /**
+   * @param d
+   */
+  public void setLatSeconds(double d) {
+    latSeconds = d;
+  }
 
-    /**
-     * @param d
-     */
-    public void setLonPositiveWestSeconds(double d) {
-        lonPositiveWestSeconds = d;
-    }
-
+  /**
+   * @param d
+   */
+  public void setLonPositiveWestSeconds(double d) {
+    lonPositiveWestSeconds = d;
+  }
 }

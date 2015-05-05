@@ -24,43 +24,43 @@ import javax.resource.cci.Record;
 import au.com.objectix.jgridshift.GridShift;
 
 public class GridShiftRecord extends GridShift implements Record {
-    
-    private String name;
-    private String shortDesc;
-    
-    /**
-     * @see javax.resource.cci.Record#getRecordName()
-     */
-    public String getRecordName() {
-        return name;
-    }
-    /**
-     * @see javax.resource.cci.Record#setRecordName(java.lang.String)
-     */
-    public void setRecordName(String s) {
-        name = s;
-    }
-    /**
-     * @see javax.resource.cci.Record#getRecordShortDescription()
-     */
-    public String getRecordShortDescription() {
-        return shortDesc;
-    }
-    /**
-     * @see javax.resource.cci.Record#setRecordShortDescription(java.lang.String)
-     */
-    public void setRecordShortDescription(String s) {
-        shortDesc = s;
-    }
-    /**
-     * Clone this record
-     */
-    public Object clone() {
-        Object clone = null;
-        try {
-            clone = super.clone();
-        } catch (CloneNotSupportedException cnse) {
-        }
-        return clone;
-    }
+
+  private static final long serialVersionUID = 3303083935624698012L;
+  private String name;
+  private String shortDesc;
+
+  /**
+   * @see javax.resource.cci.Record#getRecordName()
+   */
+  public String getRecordName() {
+    return name;
+  }
+  /**
+   * @see javax.resource.cci.Record#setRecordName(java.lang.String)
+   */
+  public void setRecordName(String s) {
+    name = s;
+  }
+  /**
+   * @see javax.resource.cci.Record#getRecordShortDescription()
+   */
+  public String getRecordShortDescription() {
+    return shortDesc;
+  }
+  /**
+   * @see javax.resource.cci.Record#setRecordShortDescription(java.lang.String)
+   */
+  public void setRecordShortDescription(String s) {
+    shortDesc = s;
+  }
+  /**
+   * Clone this record
+   */
+  public Object clone() {
+    Object clone = null;
+    try {
+      clone = super.clone();
+    } catch (CloneNotSupportedException cnse) {}
+    return clone;
+  }
 }

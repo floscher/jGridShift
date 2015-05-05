@@ -9,6 +9,13 @@ sourceSets {
   gui
 }
 
+eclipse {
+  classpath {
+    downloadSources=true
+    downloadJavadoc=true
+  }
+}
+
 repositories {
   mavenCentral();
 }

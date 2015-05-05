@@ -19,18 +19,14 @@
  */
 package au.com.objectix.jgridshift.jca;
 
-import java.util.ArrayList;
 import java.io.IOException;
+
 import javax.resource.NotSupportedException;
 import javax.resource.ResourceException;
-import javax.resource.cci.Record;
-import javax.resource.cci.InteractionSpec;
-import javax.resource.cci.Connection;
 import javax.resource.cci.ConnectionMetaData;
 import javax.resource.cci.Interaction;
 import javax.resource.cci.LocalTransaction;
 import javax.resource.cci.ResultSetInfo;
-import javax.resource.spi.ManagedConnection;
 
 import au.com.objectix.jgridshift.GridShift;
 
@@ -51,7 +47,7 @@ public class GridShiftConnectionImpl implements GridShiftConnection {
 
 	public Interaction createInteraction() throws ResourceException {
 		if (mc != null) {
-            return new InteractionImpl(this);
+      return new InteractionImpl(this);
 		} else {
 			throw new ResourceException(CLOSED);
 		}
@@ -73,34 +69,34 @@ public class GridShiftConnectionImpl implements GridShiftConnection {
 		throw new NotSupportedException(NO_RESULT_SET);
 	}
 
-    public void close() throws ResourceException {
-        if (mc != null) {
-            mc.close(this);
-        }
-        mc = null;
+  public void close() throws ResourceException {
+    if (mc != null) {
+      mc.close(this);
     }
-    
-    /**
-     * This is a non CCI method to facilitate more compact usage of the jGridshift API
-     * <p>Shift a coordinate in the Forward direction of the Grid Shift File.
-     * 
-     * @param gs A GridShift object containing the coordinate to shift
-     * @return True if the coordinate is within a Sub Grid, false if not
-     * @throws IOException
-     */
-    public boolean gridShiftForward(GridShift gs) throws ResourceException {
-        return mc.gridShiftForward(gs);
-    }
-    
-    /**
-     * This is a non CCI method to facilitate more compact usage of the jGridshift API
-     * <p>Shift a coordinate in the Reverse direction of the Grid Shift File.
-     * 
-     * @param gs A GridShift object containing the coordinate to shift
-     * @return True if the coordinate is within a Sub Grid, false if not
-     * @throws IOException
-     */
-    public boolean gridShiftReverse(GridShift gs) throws ResourceException {
-        return mc.gridShiftReverse(gs);
-    }
+    mc = null;
+  }
+
+  /**
+   * This is a non CCI method to facilitate more compact usage of the jGridshift API
+   * <p>Shift a coordinate in the Forward direction of the Grid Shift File.</p>
+   *
+   * @param gs A GridShift object containing the coordinate to shift
+   * @return True if the coordinate is within a Sub Grid, false if not
+   * @throws IOException
+   */
+  public boolean gridShiftForward(GridShift gs) throws ResourceException {
+    return mc.gridShiftForward(gs);
+  }
+
+  /**
+   * This is a non CCI method to facilitate more compact usage of the jGridshift API
+   * <p>Shift a coordinate in the Reverse direction of the Grid Shift File.</p>
+   *
+   * @param gs A GridShift object containing the coordinate to shift
+   * @return True if the coordinate is within a Sub Grid, false if not
+   * @throws IOException
+   */
+  public boolean gridShiftReverse(GridShift gs) throws ResourceException {
+    return mc.gridShiftReverse(gs);
+  }
 }

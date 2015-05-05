@@ -22,14 +22,15 @@ package au.com.objectix.jgridshift.jca;
 import javax.resource.cci.InteractionSpec;
 
 public class GridShiftInteractionSpec implements InteractionSpec {
-    
-    private boolean forward = true;
-    
-    public void setForward(boolean b) {
-        forward = b;
-    }
-    
-    public boolean isForward() {
-        return forward;
-    }
+
+  private static final long serialVersionUID = 5872006135115083683L;
+  private boolean forward = true;
+
+  public void setForward(boolean b) {
+    forward = b;
+  }
+
+  public boolean isForward() {
+    return forward;
+  }
 }

@@ -21,10 +21,9 @@ package au.com.objectix.jgridshift.jca;
 
 import javax.naming.NamingException;
 import javax.naming.Reference;
-import javax.resource.ResourceException;
 import javax.resource.NotSupportedException;
+import javax.resource.ResourceException;
 import javax.resource.cci.Connection;
-import javax.resource.cci.ConnectionFactory;
 import javax.resource.cci.ConnectionSpec;
 import javax.resource.cci.RecordFactory;
 import javax.resource.cci.ResourceAdapterMetaData;
@@ -33,41 +32,41 @@ import javax.resource.spi.ManagedConnectionFactory;
 
 public class ConnectionFactoryImpl implements GridShiftConnectionFactory {
 
-	private Reference reference;
-	private ConnectionManager cm;
-	private ManagedConnectionFactory mcf;
+  private static final long serialVersionUID = -1858828671830332335L;
+  private Reference reference;
+  private ConnectionManager cm;
+  private ManagedConnectionFactory mcf;
 
-	public ConnectionFactoryImpl(ConnectionManager cm, ManagedConnectionFactory mcf) {
-        this.cm = cm;
-		this.mcf = mcf;
-	}
+  public ConnectionFactoryImpl(ConnectionManager cm, ManagedConnectionFactory mcf) {
+    this.cm = cm;
+    this.mcf = mcf;
+  }
 
-    public GridShiftConnection getGridShiftConnection() throws ResourceException {
-        return (GridShiftConnection) cm.allocateConnection(mcf, null);
-    }
+  public GridShiftConnection getGridShiftConnection() throws ResourceException {
+    return (GridShiftConnection) cm.allocateConnection(mcf, null);
+  }
 
-    public Connection getConnection() throws ResourceException {
-        return (Connection)getGridShiftConnection();
-    }
+  public Connection getConnection() throws ResourceException {
+    return (Connection)getGridShiftConnection();
+  }
 
-	public Connection getConnection(ConnectionSpec connectionSpec) throws ResourceException {
-		return (Connection)getGridShiftConnection();
-	}
+  public Connection getConnection(ConnectionSpec connectionSpec) throws ResourceException {
+    return (Connection)getGridShiftConnection();
+  }
 
-	public RecordFactory getRecordFactory() throws ResourceException {
-        throw new NotSupportedException("Record Factory not supported");
-	}
+  public RecordFactory getRecordFactory() throws ResourceException {
+    throw new NotSupportedException("Record Factory not supported");
+  }
 
-	public ResourceAdapterMetaData getMetaData() throws ResourceException {
-		return new ResourceAdapterMetaDataImpl();
-	}
+  public ResourceAdapterMetaData getMetaData() throws ResourceException {
+    return new ResourceAdapterMetaDataImpl();
+  }
 
-	public void setReference(Reference reference) {
-		this.reference = reference;
-	}
+  public void setReference(Reference reference) {
+    this.reference = reference;
+  }
 
-	public Reference getReference() throws NamingException {
-		return reference;
-	}
-
+  public Reference getReference() throws NamingException {
+    return reference;
+  }
 }

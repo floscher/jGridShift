@@ -48,107 +48,103 @@ import au.com.objectix.jgridshift.GridShiftFile;
  * @author peter
  */
 public class Gui extends JFrame {
-    
-    public static final String TITLE = "jGridShift";
-    public static final String NOT_LOADED = "Not Loaded";
-    private GridShiftFile gridShiftFile = new GridShiftFile();
-    private JTree tree;
-    private File userPropertiesFile;
-    private Properties userProperties = new Properties();
-    
-    public Gui() throws Exception {
-        super(TITLE);
-        JMenuBar menuBar = new JMenuBar();
-        JMenu helpMenu = new JMenu("Help");
-        helpMenu.add(new AboutAction());
-        menuBar.add(helpMenu);
-        setJMenuBar(menuBar);
-        tree = new JTree(new SubGridTreeModel());
-        String userHome = System.getProperty("user.home");
-        userPropertiesFile = new File(userHome, "jgridshift.properties");
-        if (!userPropertiesFile.exists()) {
-            userPropertiesFile.createNewFile();
-        }
-        userProperties.load(new FileInputStream(userPropertiesFile));
-        String gridShiftFileName = (String)userProperties.get("gridShiftFile");
-        JScrollPane scrollPane = new JScrollPane(tree);
-        scrollPane.setPreferredSize(new Dimension(100, 150));
-        GridBagLayout gridbag = new GridBagLayout();
-        GuiPanel guiPanel = new GuiPanel(gridShiftFileName, gridbag, this);
-        JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, guiPanel, scrollPane);
-        this.getContentPane().add(splitPane, BorderLayout.CENTER);
+
+  public static final String TITLE = "jGridShift";
+  public static final String NOT_LOADED = "Not Loaded";
+  private GridShiftFile gridShiftFile = new GridShiftFile();
+  private JTree tree;
+  private File userPropertiesFile;
+  private Properties userProperties = new Properties();
+
+  public Gui() throws Exception {
+    super(TITLE);
+    JMenuBar menuBar = new JMenuBar();
+    JMenu helpMenu = new JMenu("Help");
+    helpMenu.add(new AboutAction());
+    menuBar.add(helpMenu);
+    setJMenuBar(menuBar);
+    tree = new JTree(new SubGridTreeModel());
+    String userHome = System.getProperty("user.home");
+    userPropertiesFile = new File(userHome, "jgridshift.properties");
+    if (!userPropertiesFile.exists()) {
+      userPropertiesFile.createNewFile();
     }
-    
-    public boolean loadGridShiftFile(String filePath) {
-        boolean loaded = false;
-        try {
-            gridShiftFile.loadGridShiftFile(new RandomAccessFile(filePath, "r"));
-            loaded = true;
-            tree.setModel(new SubGridTreeModel(gridShiftFile.getSubGridTree()));
-            userProperties.setProperty("gridShiftFile", filePath);
-            try {
-                userProperties.store(new FileOutputStream(userPropertiesFile), null);
-            } catch (IOException ioe) {
-            }
-        } catch (Exception ex) {
-            tree.setModel(new SubGridTreeModel());
-        }
-        return loaded;
+    userProperties.load(new FileInputStream(userPropertiesFile));
+    String gridShiftFileName = (String)userProperties.get("gridShiftFile");
+    JScrollPane scrollPane = new JScrollPane(tree);
+    scrollPane.setPreferredSize(new Dimension(100, 150));
+    GridBagLayout gridbag = new GridBagLayout();
+    GuiPanel guiPanel = new GuiPanel(gridShiftFileName, gridbag, this);
+    JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, guiPanel, scrollPane);
+    this.getContentPane().add(splitPane, BorderLayout.CENTER);
+  }
+
+  public boolean loadGridShiftFile(String filePath) {
+    boolean loaded = false;
+    try {
+      gridShiftFile.loadGridShiftFile(new RandomAccessFile(filePath, "r"));
+      loaded = true;
+      tree.setModel(new SubGridTreeModel(gridShiftFile.getSubGridTree()));
+      userProperties.setProperty("gridShiftFile", filePath);
+      try {
+        userProperties.store(new FileOutputStream(userPropertiesFile), null);
+      } catch (IOException ioe) {}
+    } catch (Exception ex) {
+      tree.setModel(new SubGridTreeModel());
     }
-    
-    public void unloadGridShiftFile() {
-        try {
-            gridShiftFile.unload();
-        } catch (IOException ioe) {
-        }
+    return loaded;
+  }
+
+  public void unloadGridShiftFile() {
+    try {
+      gridShiftFile.unload();
+    } catch (IOException ioe) {}
+  }
+
+  public boolean gridShiftForward(GridShift gs) throws IOException {
+    return gridShiftFile.gridShiftForward(gs);
+  }
+
+  public boolean gridShiftReverse(GridShift gs) throws IOException {
+    return gridShiftFile.gridShiftReverse(gs);
+  }
+
+  public String getForwardString() {
+    if (gridShiftFile.isLoaded()) {
+      return gridShiftFile.getFromEllipsoid() + " -> " + gridShiftFile.getToEllipsoid();
+    } else {
+      return NOT_LOADED;
     }
-    
-    public boolean gridShiftForward(GridShift gs) throws IOException {
-        return gridShiftFile.gridShiftForward(gs);
+  }
+
+  public String getReverseString() {
+    if (gridShiftFile.isLoaded()) {
+      return gridShiftFile.getToEllipsoid() + " -> " + gridShiftFile.getFromEllipsoid();
+    } else {
+      return NOT_LOADED;
     }
-    
-    public boolean gridShiftReverse(GridShift gs) throws IOException {
-        return gridShiftFile.gridShiftReverse(gs);
+  }
+
+  public static void main(String[] args) {
+    try {
+      JFrame frame = new Gui();
+      frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+      frame.pack();
+      frame.setVisible(true);
+    } catch (Throwable e) {
+      e.printStackTrace();
     }
-    
-    public String getForwardString() {
-        if (gridShiftFile.isLoaded()) {
-            return gridShiftFile.getFromEllipsoid() + " -> " + 
-                gridShiftFile.getToEllipsoid();
-        } else {
-            return NOT_LOADED;
-        }
+  }
+
+  class AboutAction extends AbstractAction {
+    public AboutAction() {
+      super("About");
     }
-    
-    public String getReverseString() {
-        if (gridShiftFile.isLoaded()) {
-            return gridShiftFile.getToEllipsoid() + " -> " + 
-                gridShiftFile.getFromEllipsoid();
-        } else {
-            return NOT_LOADED;
-        }
+    public void actionPerformed(ActionEvent e) {
+      AboutDialog dialog = new AboutDialog(Gui.this);
+      dialog.pack();
+      dialog.show();
+      dialog.dispose();
     }
-    
-    public static void main(String[] args) {
-        try {
-            JFrame frame = new Gui();
-            frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-            frame.pack();
-            frame.setVisible(true);
-        } catch (Throwable e) {
-            e.printStackTrace();
-        }
-    }
-    
-    class AboutAction extends AbstractAction {
-        public AboutAction() {
-            super("About");
-        }
-        public void actionPerformed(ActionEvent e) {
-            AboutDialog dialog = new AboutDialog(Gui.this);
-            dialog.pack();
-            dialog.show();
-            dialog.dispose();
-        }
-    }
+  }
 }

@@ -12,3 +12,8 @@ If you want to open the project in Eclipse, first run
 ./gradlew cleanEclipse eclipse
 ```
 Then you can import it as if it was a normal Eclipse project.
+
+If you want javadoc, run:
+```shell
+./gradlew javadoc
+```

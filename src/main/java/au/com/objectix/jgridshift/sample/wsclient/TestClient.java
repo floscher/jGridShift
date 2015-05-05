@@ -26,43 +26,42 @@ import org.apache.axis.client.Service;
 
 public class TestClient {
 
-    /**
-     * Supply test coordinates as lat,lon args eg -37.0,145.0 -22.0,135.0
-     * @param args
-     * @throws Exception
-     */
-	public static void main(String[] args) throws Exception{	
-		try {
-            String endpoint = "http://localhost:8080/jboss-net/services/JGridShiftService";
-            Service service = new Service();
-            Call call = (Call)service.createCall();
-            call.setTargetEndpointAddress(new java.net.URL(endpoint));
-            call.setOperationName("gridShiftForward");
-            for (int i = 0; i < args.length; i++) {
-                doit(call, args[i]);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-        }
+  /**
+   * Supply test coordinates as lat,lon args eg -37.0,145.0 -22.0,135.0
+   * @param args
+   * @throws Exception
+   */
+  public static void main(String[] args) throws Exception{
+    try {
+      String endpoint = "http://localhost:8080/jboss-net/services/JGridShiftService";
+      Service service = new Service();
+      Call call = (Call)service.createCall();
+      call.setTargetEndpointAddress(new java.net.URL(endpoint));
+      call.setOperationName("gridShiftForward");
+      for (int i = 0; i < args.length; i++) {
+        doit(call, args[i]);
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    } finally {}
+  }
+
+  private static void doit(Call call, String latlon) throws Exception {
+    int comma = latlon.indexOf(',');
+    long start = System.currentTimeMillis();
+    GridShift gs = new GridShift();
+    gs.setLatDegrees(Double.parseDouble(latlon.substring(0, comma)));
+    gs.setLonPositiveEastDegrees(Double.parseDouble(latlon.substring(comma + 1)));
+    Double latSec = new Double(gs.getLatSeconds());
+    Double lonSec = new Double(gs.getLonPositiveWestSeconds());
+    String result = (String) call.invoke( new Object[] {latSec, lonSec} );
+    if (result == null) {
+      System.out.println("No result");
+    } else {
+      comma = result.indexOf(',');
+      gs.setLatSeconds(Double.parseDouble(result.substring(0, comma)));
+      gs.setLonPositiveWestSeconds(Double.parseDouble(result.substring(comma + 1)));
+      System.out.println("Lat: " + gs.getLatDegrees() + " Lon: " + gs.getLonPositiveEastDegrees() + " Time: " + (System.currentTimeMillis() - start));
     }
-    
-    private static void doit(Call call, String latlon) throws Exception {
-        int comma = latlon.indexOf(',');
-        long start = System.currentTimeMillis();
-        GridShift gs = new GridShift();
-        gs.setLatDegrees(Double.parseDouble(latlon.substring(0, comma)));
-        gs.setLonPositiveEastDegrees(Double.parseDouble(latlon.substring(comma + 1)));
-        Double latSec = new Double(gs.getLatSeconds());
-        Double lonSec = new Double(gs.getLonPositiveWestSeconds());
-        String result = (String) call.invoke( new Object[] {latSec, lonSec} );
-        if (result == null) {
-            System.out.println("No result");
-        } else {
-            comma = result.indexOf(',');
-            gs.setLatSeconds(Double.parseDouble(result.substring(0, comma)));
-            gs.setLonPositiveWestSeconds(Double.parseDouble(result.substring(comma + 1)));
-            System.out.println("Lat: " + gs.getLatDegrees() + " Lon: " + gs.getLonPositiveEastDegrees() + " Time: " + (System.currentTimeMillis() - start));
-        }        
-    }
-} 
+  }
+}

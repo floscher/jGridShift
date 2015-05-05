@@ -23,5 +23,5 @@ import javax.resource.cci.ConnectionFactory;
 import javax.resource.ResourceException;
 
 public interface GridShiftConnectionFactory extends ConnectionFactory {
-    public GridShiftConnection getGridShiftConnection() throws ResourceException;
+  public GridShiftConnection getGridShiftConnection() throws ResourceException;
 }

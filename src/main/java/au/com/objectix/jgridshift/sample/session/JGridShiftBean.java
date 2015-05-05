@@ -33,7 +33,7 @@ import au.com.objectix.jgridshift.GridShift;
 
 /**
  * Implementation of the sample jgridshift web service.
- * 
+ *
  * @ejb:bean name="jgridshift/JGridShift"
  *           display-name="Grid Shift"
  *           type="Stateless"
@@ -43,134 +43,134 @@ import au.com.objectix.jgridshift.GridShift;
  * @jboss-net:web-service urn="JGridShiftService"
  */
 public abstract class JGridShiftBean implements SessionBean {
-    
-    private GridShiftConnectionFactory gsFactory;
-    
-    /**
-     * @ejb:interface-method view-type="local" 
-     * @jboss-net:web-method
-     * 
-     * @return the shifted coordinate
-     */
-    public String gridShiftForward(Double latSeconds, Double lonPositiveWestSeconds) throws ResourceException {
-        GridShift gs = new GridShift();
-        gs.setLatSeconds(latSeconds.doubleValue());
-        gs.setLonPositiveWestSeconds(lonPositiveWestSeconds.doubleValue());
-        GridShiftConnection gsConn = null;
-        try {
-            gsConn = gsFactory.getGridShiftConnection();
-            boolean success = gsConn.gridShiftForward(gs);
-            String result = null;
-            if (success) {
-                result = "" + gs.getShiftedLatSeconds() + "," + gs.getShiftedLonPositiveWestSeconds();
-            }
-            return result;
-        } finally {
-            gsConn.close();
-        }
+
+  private static final long serialVersionUID = -7420580002147954692L;
+  private GridShiftConnectionFactory gsFactory;
+
+  /**
+   * @ejb:interface-method view-type="local"
+   * @jboss-net:web-method
+   *
+   * @return the shifted coordinate
+   */
+  public String gridShiftForward(Double latSeconds, Double lonPositiveWestSeconds) throws ResourceException {
+    GridShift gs = new GridShift();
+    gs.setLatSeconds(latSeconds.doubleValue());
+    gs.setLonPositiveWestSeconds(lonPositiveWestSeconds.doubleValue());
+    GridShiftConnection gsConn = null;
+    try {
+      gsConn = gsFactory.getGridShiftConnection();
+      boolean success = gsConn.gridShiftForward(gs);
+      String result = null;
+      if (success) {
+        result = "" + gs.getShiftedLatSeconds() + "," + gs.getShiftedLonPositiveWestSeconds();
+      }
+      return result;
+    } finally {
+      gsConn.close();
     }
-    
-    /**
-     * @ejb:interface-method view-type="local" 
-     * @jboss-net:web-method
-     * 
-     * @return the shifted coordinate
-     */
-    public String gridShiftReverse(Double latSeconds, Double lonPositiveWestSeconds) throws ResourceException {
-        GridShift gs = new GridShift();
-        gs.setLatSeconds(latSeconds.doubleValue());
-        gs.setLonPositiveWestSeconds(lonPositiveWestSeconds.doubleValue());
-        GridShiftConnection gsConn = null;
-        try {
-            gsConn = gsFactory.getGridShiftConnection();
-            boolean success = gsConn.gridShiftReverse(gs);
-            String result = null;
-            if (success) {
-                result = "" + gs.getShiftedLatSeconds() + "," + gs.getShiftedLonPositiveWestSeconds();
-            }
-            return result;
-        } finally {
-            gsConn.close();
-        }
+  }
+
+  /**
+   * @ejb:interface-method view-type="local"
+   * @jboss-net:web-method
+   *
+   * @return the shifted coordinate
+   */
+  public String gridShiftReverse(Double latSeconds, Double lonPositiveWestSeconds) throws ResourceException {
+    GridShift gs = new GridShift();
+    gs.setLatSeconds(latSeconds.doubleValue());
+    gs.setLonPositiveWestSeconds(lonPositiveWestSeconds.doubleValue());
+    GridShiftConnection gsConn = null;
+    try {
+      gsConn = gsFactory.getGridShiftConnection();
+      boolean success = gsConn.gridShiftReverse(gs);
+      String result = null;
+      if (success) {
+        result = "" + gs.getShiftedLatSeconds() + "," + gs.getShiftedLonPositiveWestSeconds();
+      }
+      return result;
+    } finally {
+      gsConn.close();
     }
-    
-    /**
-     * @ejb:interface-method view-type="local" 
-     * @jboss-net:web-method
-     * 
-     * @return the shifted coordinate
-     */
-    public Coordinate gridShiftForwardTyped(Coordinate coord) throws ResourceException {
-        GridShift gs = new GridShift();
-        gs.setLatSeconds(coord.getLatSeconds());
-        gs.setLonPositiveWestSeconds(coord.getLonPositiveWestSeconds());
-        GridShiftConnection gsConn = null;
-        try {
-            gsConn = gsFactory.getGridShiftConnection();
-            boolean success = gsConn.gridShiftForward(gs);
-            if (success) {
-                coord.setLatSeconds(gs.getShiftedLatSeconds());
-                coord.setLonPositiveWestSeconds(gs.getShiftedLonPositiveWestSeconds());
-                return coord;
-            } else {
-                return null;
-            }
-        } finally {
-            gsConn.close();
-        }
+  }
+
+  /**
+   * @ejb:interface-method view-type="local"
+   * @jboss-net:web-method
+   *
+   * @return the shifted coordinate
+   */
+  public Coordinate gridShiftForwardTyped(Coordinate coord) throws ResourceException {
+    GridShift gs = new GridShift();
+    gs.setLatSeconds(coord.getLatSeconds());
+    gs.setLonPositiveWestSeconds(coord.getLonPositiveWestSeconds());
+    GridShiftConnection gsConn = null;
+    try {
+      gsConn = gsFactory.getGridShiftConnection();
+      boolean success = gsConn.gridShiftForward(gs);
+      if (success) {
+        coord.setLatSeconds(gs.getShiftedLatSeconds());
+        coord.setLonPositiveWestSeconds(gs.getShiftedLonPositiveWestSeconds());
+        return coord;
+      } else {
+        return null;
+      }
+    } finally {
+      gsConn.close();
     }
-    
-    /**
-     * @ejb:interface-method view-type="local" 
-     * @jboss-net:web-method
-     * 
-     * @return the shifted coordinate
-     */
-    public Coordinate gridShiftReverseTyped(Coordinate coord) throws ResourceException {
-        GridShift gs = new GridShift();
-        gs.setLatSeconds(coord.getLatSeconds());
-        gs.setLonPositiveWestSeconds(coord.getLonPositiveWestSeconds());
-        GridShiftConnection gsConn = null;
-        try {
-            gsConn = gsFactory.getGridShiftConnection();
-            boolean success = gsConn.gridShiftReverse(gs);
-            if (success) {
-                coord.setLatSeconds(gs.getShiftedLatSeconds());
-                coord.setLonPositiveWestSeconds(gs.getShiftedLonPositiveWestSeconds());
-                return coord;
-            } else {
-                return null;
-            }
-        } finally {
-            gsConn.close();
-        }
+  }
+
+  /**
+   * @ejb:interface-method view-type="local"
+   * @jboss-net:web-method
+   *
+   * @return the shifted coordinate
+   */
+  public Coordinate gridShiftReverseTyped(Coordinate coord) throws ResourceException {
+    GridShift gs = new GridShift();
+    gs.setLatSeconds(coord.getLatSeconds());
+    gs.setLonPositiveWestSeconds(coord.getLonPositiveWestSeconds());
+    GridShiftConnection gsConn = null;
+    try {
+      gsConn = gsFactory.getGridShiftConnection();
+      boolean success = gsConn.gridShiftReverse(gs);
+      if (success) {
+        coord.setLatSeconds(gs.getShiftedLatSeconds());
+        coord.setLonPositiveWestSeconds(gs.getShiftedLonPositiveWestSeconds());
+        return coord;
+      } else {
+        return null;
+      }
+    } finally {
+      gsConn.close();
     }
-    
-    /**
-     * @see javax.ejb.SessionBean#ejbActivate()
-     */
-    public void ejbActivate() throws EJBException, RemoteException {
+  }
+
+  /**
+   * @see javax.ejb.SessionBean#ejbActivate()
+   */
+  public void ejbActivate() throws EJBException, RemoteException {}
+
+  /**
+   * @see javax.ejb.SessionBean#ejbPassivate()
+   */
+  public void ejbPassivate() throws EJBException, RemoteException {}
+
+  /**
+   * @see javax.ejb.SessionBean#ejbRemove()
+   */
+  public void ejbRemove() throws EJBException, RemoteException {}
+
+  /**
+   * @see javax.ejb.SessionBean#setSessionContext(javax.ejb.SessionContext)
+   */
+  public void setSessionContext(SessionContext arg0) throws EJBException, RemoteException {
+    try {
+      InitialContext ic = new InitialContext();
+      gsFactory = (GridShiftConnectionFactory)ic.lookup("java:/ra/jgridshift");
+    } catch (Exception e) {
+      throw new EJBException("Failed to lookup GridShift Connection Factory", e);
     }
-    /**
-     * @see javax.ejb.SessionBean#ejbPassivate()
-     */
-    public void ejbPassivate() throws EJBException, RemoteException {
-    }
-    /**
-     * @see javax.ejb.SessionBean#ejbRemove()
-     */
-    public void ejbRemove() throws EJBException, RemoteException {
-    }
-    /**
-     * @see javax.ejb.SessionBean#setSessionContext(javax.ejb.SessionContext)
-     */
-    public void setSessionContext(SessionContext arg0)
-        throws EJBException, RemoteException {
-            try {
-                InitialContext ic = new InitialContext();
-                gsFactory = (GridShiftConnectionFactory)ic.lookup("java:/ra/jgridshift");
-            } catch (Exception e) {
-                throw new EJBException("Failed to lookup GridShift Connection Factory", e);
-            }
-    }
+  }
 }

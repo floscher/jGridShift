@@ -19,29 +19,27 @@
  */
 package au.com.objectix.jgridshift.jca;
 
-import javax.resource.NotSupportedException;
 import javax.resource.ResourceException;
-import javax.resource.spi.ManagedConnectionMetaData;
 import javax.resource.cci.ConnectionMetaData;
+import javax.resource.spi.ManagedConnectionMetaData;
 
 public class ConnectionMetaDataImpl implements ConnectionMetaData {
 
-    private ManagedConnectionMetaData mcmd;
+  private ManagedConnectionMetaData mcmd;
 
-    public ConnectionMetaDataImpl(ManagedConnectionMetaData mcmd) {
-        this.mcmd = mcmd;
-    }
+  public ConnectionMetaDataImpl(ManagedConnectionMetaData mcmd) {
+    this.mcmd = mcmd;
+  }
 
-	public String getEISProductName() throws ResourceException {
-        return mcmd.getEISProductName();
-	}
+  public String getEISProductName() throws ResourceException {
+    return mcmd.getEISProductName();
+  }
 
-	public String getEISProductVersion() throws ResourceException {
-        return mcmd.getEISProductVersion();
-	}
+  public String getEISProductVersion() throws ResourceException {
+    return mcmd.getEISProductVersion();
+  }
 
-	public String getUserName() throws ResourceException {
-        return mcmd.getUserName();
-	}
-
+  public String getUserName() throws ResourceException {
+    return mcmd.getUserName();
+  }
 }
