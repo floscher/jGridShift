@@ -36,7 +36,7 @@ public class ResourceAdapterMetaDataImpl implements ResourceAdapterMetaData {
   }
 
   public String getAdapterVersion() {
-    return "1.0";
+    return "1.0.1";
   }
 
   public String[] getInteractionSpecsSupported() {
@@ -44,7 +44,7 @@ public class ResourceAdapterMetaDataImpl implements ResourceAdapterMetaData {
   }
 
   public String getSpecVersion() {
-    return "1.0";
+    return "1.0.1";
   }
 
   public boolean supportsExecuteWithInputAndOutputRecord() {

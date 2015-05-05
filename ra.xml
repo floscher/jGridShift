@@ -5,9 +5,9 @@
 <connector>
     <display-name>jGridShiftAdapter</display-name>
     <vendor-name>Objectix Pty Ltd</vendor-name>
-    <spec-version>1.0</spec-version>
+    <spec-version>1.0.1</spec-version>
     <eis-type>jGridShift</eis-type>
-    <version>1.0</version>
+    <version>1.0.1</version>
     <license>
     	<description>LGPL</description>
     	<license-required>false</license-required>
