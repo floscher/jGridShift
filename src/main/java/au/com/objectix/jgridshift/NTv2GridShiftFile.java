@@ -63,7 +63,7 @@ import java.util.List;
  *
  * @author Peter Yuill
  */
-public class GridShiftFile implements Serializable {
+public class NTv2GridShiftFile implements Serializable {
 
   private static final long serialVersionUID = -6327285995870612675L;
   private static final int REC_SIZE = 16;
@@ -80,17 +80,17 @@ public class GridShiftFile implements Serializable {
   private double toSemiMajorAxis;
   private double toSemiMinorAxis;
 
-  private SubGrid[] topLevelSubGrid;
-  private SubGrid lastSubGrid;
+  private NTv2SubGrid[] topLevelSubGrid;
+  private NTv2SubGrid lastSubGrid;
 
   // Note: Only objects that are Stream loaded are intended to be Serialized
   // Objects that use RandomAccessFile data will fail if deserialized
   private transient RandomAccessFile raf;
 
   /**
-   * Constructs a new {@code GridShiftFile}.
+   * Constructs a new {@code NTv2GridShiftFile}.
    */
-  public GridShiftFile() {
+  public NTv2GridShiftFile() {
   }
 
   /**
@@ -117,11 +117,11 @@ public class GridShiftFile implements Serializable {
       throw new IllegalArgumentException("Input file is not an NTv2 grid shift file");
     }
     in.read(b8);
-    overviewHeaderCount = Util.getIntBE(b8, 0);
+    overviewHeaderCount = NTv2Util.getIntBE(b8, 0);
     if (overviewHeaderCount == 11) {
       bigEndian = true;
     } else {
-      overviewHeaderCount = Util.getIntLE(b8, 0);
+      overviewHeaderCount = NTv2Util.getIntLE(b8, 0);
       if (overviewHeaderCount == 11) {
         bigEndian = false;
       } else {
@@ -130,11 +130,11 @@ public class GridShiftFile implements Serializable {
     }
     in.read(b8);
     in.read(b8);
-    subGridHeaderCount = Util.getInt(b8, bigEndian);
+    subGridHeaderCount = NTv2Util.getInt(b8, bigEndian);
     in.read(b8);
     in.read(b8);
-    subGridCount = Util.getInt(b8, bigEndian);
-    SubGrid[] subGrid = new SubGrid[subGridCount];
+    subGridCount = NTv2Util.getInt(b8, bigEndian);
+    NTv2SubGrid[] subGrid = new NTv2SubGrid[subGridCount];
     in.read(b8);
     in.read(b8);
     shiftType = new String(b8, StandardCharsets.UTF_8);
@@ -149,24 +149,22 @@ public class GridShiftFile implements Serializable {
     toEllipsoid = new String(b8, StandardCharsets.UTF_8);
     in.read(b8);
     in.read(b8);
-    fromSemiMajorAxis = Util.getDouble(b8, bigEndian);
+    fromSemiMajorAxis = NTv2Util.getDouble(b8, bigEndian);
     in.read(b8);
     in.read(b8);
-    fromSemiMinorAxis = Util.getDouble(b8, bigEndian);
+    fromSemiMinorAxis = NTv2Util.getDouble(b8, bigEndian);
     in.read(b8);
     in.read(b8);
-    toSemiMajorAxis = Util.getDouble(b8, bigEndian);
+    toSemiMajorAxis = NTv2Util.getDouble(b8, bigEndian);
     in.read(b8);
     in.read(b8);
-    toSemiMinorAxis = Util.getDouble(b8, bigEndian);
+    toSemiMinorAxis = NTv2Util.getDouble(b8, bigEndian);
 
     for (int i = 0; i < subGridCount; i++) {
-      subGrid[i] = new SubGrid(in, bigEndian, loadAccuracy);
+      subGrid[i] = new NTv2SubGrid(in, bigEndian, loadAccuracy);
     }
     topLevelSubGrid = createSubGridTree(subGrid);
     lastSubGrid = topLevelSubGrid[0];
-
-    in.close();
   }
 
   /**
@@ -193,11 +191,11 @@ public class GridShiftFile implements Serializable {
       throw new IllegalArgumentException("Input file is not an NTv2 grid shift file");
     }
     raf.read(b8);
-    overviewHeaderCount = Util.getIntBE(b8, 0);
+    overviewHeaderCount = NTv2Util.getIntBE(b8, 0);
     if (overviewHeaderCount == 11) {
       bigEndian = true;
     } else {
-      overviewHeaderCount = Util.getIntLE(b8, 0);
+      overviewHeaderCount = NTv2Util.getIntLE(b8, 0);
       if (overviewHeaderCount == 11) {
         bigEndian = false;
       } else {
@@ -207,11 +205,11 @@ public class GridShiftFile implements Serializable {
     }
     raf.read(b8);
     raf.read(b8);
-    subGridHeaderCount = Util.getInt(b8, bigEndian);
+    subGridHeaderCount = NTv2Util.getInt(b8, bigEndian);
     raf.read(b8);
     raf.read(b8);
-    subGridCount = Util.getInt(b8, bigEndian);
-    SubGrid[] subGrid = new SubGrid[subGridCount];
+    subGridCount = NTv2Util.getInt(b8, bigEndian);
+    NTv2SubGrid[] subGrid = new NTv2SubGrid[subGridCount];
     raf.read(b8);
     raf.read(b8);
     shiftType = new String(b8);
@@ -226,20 +224,20 @@ public class GridShiftFile implements Serializable {
     toEllipsoid = new String(b8);
     raf.read(b8);
     raf.read(b8);
-    fromSemiMajorAxis = Util.getDouble(b8, bigEndian);
+    fromSemiMajorAxis = NTv2Util.getDouble(b8, bigEndian);
     raf.read(b8);
     raf.read(b8);
-    fromSemiMinorAxis = Util.getDouble(b8, bigEndian);
+    fromSemiMinorAxis = NTv2Util.getDouble(b8, bigEndian);
     raf.read(b8);
     raf.read(b8);
-    toSemiMajorAxis = Util.getDouble(b8, bigEndian);
+    toSemiMajorAxis = NTv2Util.getDouble(b8, bigEndian);
     raf.read(b8);
     raf.read(b8);
-    toSemiMinorAxis = Util.getDouble(b8, bigEndian);
+    toSemiMinorAxis = NTv2Util.getDouble(b8, bigEndian);
 
     long offset = overviewHeaderCount * REC_SIZE;
     for (int i = 0; i < subGridCount; i++) {
-      subGrid[i] = new SubGrid(raf, offset, bigEndian);
+      subGrid[i] = new NTv2SubGrid(raf, offset, bigEndian);
       offset = offset + (subGridHeaderCount * REC_SIZE) + (subGrid[i].getNodeCount() * REC_SIZE);
     }
     topLevelSubGrid = createSubGridTree(subGrid);
@@ -253,30 +251,30 @@ public class GridShiftFile implements Serializable {
    * @param subGrid an array of all Sub Grids
    * @return an array of top level Sub Grids with lower level Sub Grids set.
    */
-  private SubGrid[] createSubGridTree(SubGrid[] subGrid) {
+  private NTv2SubGrid[] createSubGridTree(NTv2SubGrid[] subGrid) {
     int topLevelCount = 0;
-    HashMap<String, List<SubGrid>> subGridMap = new HashMap<>();
+    HashMap<String, List<NTv2SubGrid>> subGridMap = new HashMap<>();
     for (int i = 0; i < subGrid.length; i++) {
       if ("NONE".equalsIgnoreCase(subGrid[i].getParentSubGridName())) {
         topLevelCount++;
       }
-      subGridMap.put(subGrid[i].getSubGridName(), new ArrayList<SubGrid>());
+      subGridMap.put(subGrid[i].getSubGridName(), new ArrayList<NTv2SubGrid>());
     }
-    SubGrid[] topLevelSubGrid = new SubGrid[topLevelCount];
+    NTv2SubGrid[] topLevelSubGrid = new NTv2SubGrid[topLevelCount];
     topLevelCount = 0;
     for (int i = 0; i < subGrid.length; i++) {
       if ("NONE".equalsIgnoreCase(subGrid[i].getParentSubGridName())) {
         topLevelSubGrid[topLevelCount++] = subGrid[i];
       } else {
-        List<SubGrid> parent = subGridMap.get(subGrid[i].getParentSubGridName());
+        List<NTv2SubGrid> parent = subGridMap.get(subGrid[i].getParentSubGridName());
         parent.add(subGrid[i]);
       }
     }
-    SubGrid[] nullArray = new SubGrid[0];
+    NTv2SubGrid[] nullArray = new NTv2SubGrid[0];
     for (int i = 0; i < subGrid.length; i++) {
-      List<SubGrid> subSubGrids = subGridMap.get(subGrid[i].getSubGridName());
+      List<NTv2SubGrid> subSubGrids = subGridMap.get(subGrid[i].getSubGridName());
       if (!subSubGrids.isEmpty()) {
-        SubGrid[] subGridArray = subSubGrids.toArray(nullArray);
+        NTv2SubGrid[] subGridArray = subSubGrids.toArray(nullArray);
         subGrid[i].setSubGridArray(subGridArray);
       }
     }
@@ -286,13 +284,13 @@ public class GridShiftFile implements Serializable {
   /**
    * Shift a coordinate in the Forward direction of the Grid Shift File.
    *
-   * @param gs A GridShift object containing the coordinate to shift
+   * @param gs A {@link NTv2GridShift} object containing the coordinate to shift
    * @return True if the coordinate is within a Sub Grid, false if not
    * @throws IOException
    */
-  public boolean gridShiftForward(GridShift gs) throws IOException {
+  public boolean gridShiftForward(NTv2GridShift gs) throws IOException {
     // Try the last sub grid first, big chance the coord is still within it
-    SubGrid subGrid = lastSubGrid.getSubGridForCoord(gs.getLonPositiveWestSeconds(), gs.getLatSeconds());
+    NTv2SubGrid subGrid = lastSubGrid.getSubGridForCoord(gs.getLonPositiveWestSeconds(), gs.getLatSeconds());
     if (subGrid == null) {
       subGrid = getSubGrid(gs.getLonPositiveWestSeconds(), gs.getLatSeconds());
     }
@@ -309,13 +307,13 @@ public class GridShiftFile implements Serializable {
   /**
    * Shift a coordinate in the Reverse direction of the Grid Shift File.
    *
-   * @param gs A GridShift object containing the coordinate to shift
+   * @param gs A {@link NTv2GridShift} object containing the coordinate to shift
    * @return True if the coordinate is within a Sub Grid, false if not
    * @throws IOException
    */
-  public boolean gridShiftReverse(GridShift gs) throws IOException {
+  public boolean gridShiftReverse(NTv2GridShift gs) throws IOException {
     // set up the first estimate
-    GridShift forwardGs = new GridShift();
+    NTv2GridShift forwardGs = new NTv2GridShift();
     forwardGs.setLonPositiveWestSeconds(gs.getLonPositiveWestSeconds());
     forwardGs.setLatSeconds(gs.getLatSeconds());
     for (int i = 0; i < 4; i++) {
@@ -339,15 +337,15 @@ public class GridShiftFile implements Serializable {
   }
 
   /**
-   * Find the finest SubGrid containing the coordinate, specified in Positive
+   * Find the finest {@link NTv2SubGrid} containing the coordinate, specified in Positive
    * West Seconds
    *
    * @param lon Longitude in Positive West Seconds
    * @param lat Latitude in Seconds
-   * @return The SubGrid found or null
+   * @return The NTv2SubGrid found or null
    */
-  private SubGrid getSubGrid(double lon, double lat) {
-    SubGrid sub = null;
+  private NTv2SubGrid getSubGrid(double lon, double lat) {
+    NTv2SubGrid sub = null;
     for (int i = 0; i < topLevelSubGrid.length; i++) {
       sub = topLevelSubGrid[i].getSubGridForCoord(lon, lat);
       if (sub != null) {
@@ -397,14 +395,14 @@ public class GridShiftFile implements Serializable {
   }
 
   /**
-   * Get a copy of the SubGrid tree for this file.
+   * Get a copy of the {@link NTv2SubGrid} tree for this file.
    *
-   * @return a deep clone of the current SubGrid tree
+   * @return a deep clone of the current NTv2SubGrid tree
    */
-  public SubGrid[] getSubGridTree() {
-    SubGrid[] clone = new SubGrid[topLevelSubGrid.length];
+  public NTv2SubGrid[] getSubGridTree() {
+    NTv2SubGrid[] clone = new NTv2SubGrid[topLevelSubGrid.length];
     for (int i = 0; i < topLevelSubGrid.length; i++) {
-      clone[i] = (SubGrid) topLevelSubGrid[i].clone();
+      clone[i] = (NTv2SubGrid) topLevelSubGrid[i].clone();
     }
     return clone;
   }

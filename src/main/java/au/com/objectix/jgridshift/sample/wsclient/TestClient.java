@@ -19,7 +19,7 @@
  */
 package au.com.objectix.jgridshift.sample.wsclient;
 
-import au.com.objectix.jgridshift.GridShift;
+import au.com.objectix.jgridshift.NTv2GridShift;
 
 import org.apache.axis.client.Call;
 import org.apache.axis.client.Service;
@@ -49,7 +49,7 @@ public class TestClient {
   private static void doit(Call call, String latlon) throws Exception {
     int comma = latlon.indexOf(',');
     long start = System.currentTimeMillis();
-    GridShift gs = new GridShift();
+    NTv2GridShift gs = new NTv2GridShift();
     gs.setLatDegrees(Double.parseDouble(latlon.substring(0, comma)));
     gs.setLonPositiveEastDegrees(Double.parseDouble(latlon.substring(comma + 1)));
     Double latSec = new Double(gs.getLatSeconds());

@@ -32,7 +32,7 @@ import java.io.Serializable;
  *
  * @author Peter Yuill
  */
-public class GridShift implements Serializable {
+public class NTv2GridShift implements Serializable {
 
   private static final long serialVersionUID = 1L;
   private static final double METRE_PER_SECOND = 2.0 * Math.PI * 6378137.0 / 3600.0 / 360.0;
@@ -48,9 +48,9 @@ public class GridShift implements Serializable {
   private String subGridName;
 
   /**
-   * Constructs a new {@code NTV2GridShift}.
+   * Constructs a new {@code NTv2GridShift}.
    */
-  public GridShift() {}
+  public NTv2GridShift() {}
 
   /**
    * Data access function for latitude value
@@ -327,10 +327,10 @@ public class GridShift implements Serializable {
   }
 
   /**
-   * Make this object a copy of the supplied GridShift
+   * Make this object a copy of the supplied {@link NTv2GridShift}
    * @param gs grid to copy data from
    */
-  public void copy(GridShift gs) {
+  public void copy(NTv2GridShift gs) {
     this.lon = gs.lon;
     this.lat = gs.lat;
     this.lonShift = gs.lonShift;

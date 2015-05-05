@@ -41,8 +41,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.Properties;
 
-import au.com.objectix.jgridshift.GridShift;
-import au.com.objectix.jgridshift.GridShiftFile;
+import au.com.objectix.jgridshift.NTv2GridShift;
+import au.com.objectix.jgridshift.NTv2GridShiftFile;
 
 /**
  * @author peter
@@ -51,7 +51,7 @@ public class Gui extends JFrame {
 
   public static final String TITLE = "jGridShift";
   public static final String NOT_LOADED = "Not Loaded";
-  private GridShiftFile gridShiftFile = new GridShiftFile();
+  private NTv2GridShiftFile gridShiftFile = new NTv2GridShiftFile();
   private JTree tree;
   private File userPropertiesFile;
   private Properties userProperties = new Properties();
@@ -101,11 +101,11 @@ public class Gui extends JFrame {
     } catch (IOException ioe) {}
   }
 
-  public boolean gridShiftForward(GridShift gs) throws IOException {
+  public boolean gridShiftForward(NTv2GridShift gs) throws IOException {
     return gridShiftFile.gridShiftForward(gs);
   }
 
-  public boolean gridShiftReverse(GridShift gs) throws IOException {
+  public boolean gridShiftReverse(NTv2GridShift gs) throws IOException {
     return gridShiftFile.gridShiftReverse(gs);
   }
 

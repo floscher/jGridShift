@@ -28,7 +28,7 @@ import javax.resource.cci.Interaction;
 import javax.resource.cci.LocalTransaction;
 import javax.resource.cci.ResultSetInfo;
 
-import au.com.objectix.jgridshift.GridShift;
+import au.com.objectix.jgridshift.NTv2GridShift;
 
 public class GridShiftConnectionImpl implements GridShiftConnection {
 
@@ -80,11 +80,11 @@ public class GridShiftConnectionImpl implements GridShiftConnection {
    * This is a non CCI method to facilitate more compact usage of the jGridshift API
    * <p>Shift a coordinate in the Forward direction of the Grid Shift File.</p>
    *
-   * @param gs A GridShift object containing the coordinate to shift
+   * @param gs A NTv2GridShift object containing the coordinate to shift
    * @return True if the coordinate is within a Sub Grid, false if not
    * @throws IOException
    */
-  public boolean gridShiftForward(GridShift gs) throws ResourceException {
+  public boolean gridShiftForward(NTv2GridShift gs) throws ResourceException {
     return mc.gridShiftForward(gs);
   }
 
@@ -92,11 +92,11 @@ public class GridShiftConnectionImpl implements GridShiftConnection {
    * This is a non CCI method to facilitate more compact usage of the jGridshift API
    * <p>Shift a coordinate in the Reverse direction of the Grid Shift File.</p>
    *
-   * @param gs A GridShift object containing the coordinate to shift
+   * @param gs A NTv2GridShift object containing the coordinate to shift
    * @return True if the coordinate is within a Sub Grid, false if not
    * @throws IOException
    */
-  public boolean gridShiftReverse(GridShift gs) throws ResourceException {
+  public boolean gridShiftReverse(NTv2GridShift gs) throws ResourceException {
     return mc.gridShiftReverse(gs);
   }
 }

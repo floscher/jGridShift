@@ -21,9 +21,9 @@ package au.com.objectix.jgridshift.jca;
 
 import javax.resource.cci.Record;
 
-import au.com.objectix.jgridshift.GridShift;
+import au.com.objectix.jgridshift.NTv2GridShift;
 
-public class GridShiftRecord extends GridShift implements Record {
+public class GridShiftRecord extends NTv2GridShift implements Record {
 
   private static final long serialVersionUID = 3303083935624698012L;
   private String name;

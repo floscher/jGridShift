@@ -43,14 +43,14 @@ public class InteractionImpl implements Interaction {
   }
 
   /**
-   * Execute a forward or reverse GridShift depending on the interaction spec value of isForward.
+   * Execute a forward or reverse NTv2GridShift depending on the interaction spec value of isForward.
    * @param ispec A GridShiftInteractionSpec object to indicate forward or reverse shift.
-   * @param input A GridShift object specifying the coordinate input to the GridShift. This object
+   * @param input A NTv2GridShift object specifying the coordinate input to the NTv2GridShift. This object
    * is not updated by the method.
-   * @param output A GridShift object holding the coordinate output from the GridShift. This object
+   * @param output A NTv2GridShift object holding the coordinate output from the NTv2GridShift. This object
    * is only updated if the shift is successful.
-   * @return The GridShift is successful or not. If the input coordinate is outside the range of
-   * the GridShift binary file, false is returned.
+   * @return The NTv2GridShift is successful or not. If the input coordinate is outside the range of
+   * the NTv2GridShift binary file, false is returned.
    */
   public boolean execute(InteractionSpec ispec, Record input, Record output) throws ResourceException {
     if (c == null) {
@@ -60,9 +60,9 @@ public class InteractionImpl implements Interaction {
         if (!(ispec instanceof GridShiftInteractionSpec)) {
           throw new ResourceException("Interaction Spec is not a GridShiftInteractionSpec object");
         } else if (!(input instanceof GridShiftRecord)) {
-          throw new ResourceException("Input Record is not a GridShift object");
+          throw new ResourceException("Input Record is not a NTv2GridShift object");
         } else if (!(output instanceof GridShiftRecord)) {
-          throw new ResourceException("Output Record is not a GridShift object");
+          throw new ResourceException("Output Record is not a NTv2GridShift object");
         } else {
           GridShiftRecord clone = (GridShiftRecord)input.clone();
           boolean complete = false;
@@ -77,7 +77,7 @@ public class InteractionImpl implements Interaction {
           return complete;
         }
       } catch (Exception e) {
-        ResourceException re = new ResourceException("GridShift Failed: " + e.getMessage());
+        ResourceException re = new ResourceException("NTv2GridShift Failed: " + e.getMessage());
         re.setLinkedException(e);
         throw re;
       }
@@ -85,12 +85,12 @@ public class InteractionImpl implements Interaction {
   }
 
   /**
-   * Execute a forward or reverse GridShift depending on the interaction spec value of isForward.
+   * Execute a forward or reverse NTv2GridShift depending on the interaction spec value of isForward.
    * @param ispec A GridShiftInteractionSpec object to indicate forward or reverse shift.
-   * @param input A GridShift object specifying the coordinate input to the GridShift. This object
+   * @param input A NTv2GridShift object specifying the coordinate input to the NTv2GridShift. This object
    * is not updated by the method.
-   * @return A GridShift holding the shifted coordinate. If the input coordinate is outside the range of
-   * the GridShift binary file, null is returned.
+   * @return A NTv2GridShift holding the shifted coordinate. If the input coordinate is outside the range of
+   * the NTv2GridShift binary file, null is returned.
    */
   public Record execute(InteractionSpec ispec, Record input) throws ResourceException {
     if (c == null) {
@@ -100,7 +100,7 @@ public class InteractionImpl implements Interaction {
         if (!(ispec instanceof GridShiftInteractionSpec)) {
           throw new ResourceException("Interaction Spec is not a GridShiftInteractionSpec object");
         } else if (!(input instanceof GridShiftRecord)) {
-          throw new ResourceException("Input Record is not a GridShift object");
+          throw new ResourceException("Input Record is not a NTv2GridShift object");
         } else {
           GridShiftRecord clone = (GridShiftRecord)input.clone();
           boolean complete = false;
@@ -116,7 +116,7 @@ public class InteractionImpl implements Interaction {
           }
         }
       } catch (Exception e) {
-        ResourceException re = new ResourceException("GridShift Failed: " + e.getMessage());
+        ResourceException re = new ResourceException("NTv2GridShift Failed: " + e.getMessage());
         re.setLinkedException(e);
         throw re;
       }

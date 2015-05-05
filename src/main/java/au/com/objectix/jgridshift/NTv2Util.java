@@ -24,9 +24,9 @@ package au.com.objectix.jgridshift;
  *
  * @author Peter Yuill
  */
-public final class Util {
+public final class NTv2Util {
 
-  private Util() {
+  private NTv2Util() {
   }
 
   /**

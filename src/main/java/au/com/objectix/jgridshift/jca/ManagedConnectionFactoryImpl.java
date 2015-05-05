@@ -36,7 +36,7 @@ import javax.resource.spi.ManagedConnection;
 import javax.resource.spi.ManagedConnectionFactory;
 import javax.security.auth.Subject;
 
-import au.com.objectix.jgridshift.GridShiftFile;
+import au.com.objectix.jgridshift.NTv2GridShiftFile;
 
 // TO DO: implement bound standard properties
 
@@ -66,36 +66,36 @@ public class ManagedConnectionFactoryImpl implements ManagedConnectionFactory {
     if (RANDOM_FILE.equalsIgnoreCase(dataSource)) {
       return new ManagedConnectionImpl(gridShiftFile);
     } else if (FILE_STREAM.equalsIgnoreCase(dataSource)) {
-      GridShiftFile gsf = null;
+      NTv2GridShiftFile gsf = null;
       InitialContext ic = null;
       try {
         ic = new InitialContext();
-        gsf = (GridShiftFile)ic.lookup(streamLoadedJniName);
+        gsf = (NTv2GridShiftFile)ic.lookup(streamLoadedJniName);
       } catch (NameNotFoundException nnfe) {
         try {
-          gsf = new GridShiftFile();
+          gsf = new NTv2GridShiftFile();
           FileInputStream fis = new FileInputStream(gridShiftFile);
           gsf.loadGridShiftFile(fis, loadAccuracy);
           ic.bind(streamLoadedJniName, gsf);
         } catch (NameAlreadyBoundException nabe) {
           // someone else got in sooner
           try {
-            gsf = (GridShiftFile)ic.lookup(streamLoadedJniName);
+            gsf = (NTv2GridShiftFile)ic.lookup(streamLoadedJniName);
           } catch (NamingException ne) {
             ne.printStackTrace(log);
-            ResourceException re = new ResourceException("Failed to find GridShiftFile as name: " + streamLoadedJniName);
+            ResourceException re = new ResourceException("Failed to find NTv2GridShiftFile as name: " + streamLoadedJniName);
             re.setLinkedException(ne);
             throw re;
           }
         } catch (Exception e) {
           e.printStackTrace(log);
-          ResourceException re = new ResourceException("Failed to bind GridShiftFile as name: " + streamLoadedJniName);
+          ResourceException re = new ResourceException("Failed to bind NTv2GridShiftFile as name: " + streamLoadedJniName);
           re.setLinkedException(e);
           throw re;
         }
       } catch (Exception e) {
         e.printStackTrace(log);
-        ResourceException re = new ResourceException("Failed to acquire stream loaded GridShiftFile");
+        ResourceException re = new ResourceException("Failed to acquire stream loaded NTv2GridShiftFile");
         re.setLinkedException(e);
         throw re;
       }

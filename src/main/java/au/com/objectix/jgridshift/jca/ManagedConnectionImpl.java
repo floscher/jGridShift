@@ -36,8 +36,8 @@ import javax.resource.spi.ManagedConnectionMetaData;
 import javax.security.auth.Subject;
 import javax.transaction.xa.XAResource;
 
-import au.com.objectix.jgridshift.GridShift;
-import au.com.objectix.jgridshift.GridShiftFile;
+import au.com.objectix.jgridshift.NTv2GridShift;
+import au.com.objectix.jgridshift.NTv2GridShiftFile;
 
 public class ManagedConnectionImpl implements ManagedConnection {
 
@@ -47,22 +47,22 @@ public class ManagedConnectionImpl implements ManagedConnection {
   private GridShiftConnectionImpl conn;
   private ArrayList<ConnectionEventListener> listenerList = new ArrayList<>();
   private boolean destroyed = false;
-  private GridShiftFile gridShiftFile;
+  private NTv2GridShiftFile gridShiftFile;
   private boolean randomFile = false;
 
   public ManagedConnectionImpl(String gsf) throws ResourceException {
     try {
       RandomAccessFile raf = new RandomAccessFile(gsf, "r");
-      gridShiftFile = new GridShiftFile();
+      gridShiftFile = new NTv2GridShiftFile();
       gridShiftFile.loadGridShiftFile(raf);
       randomFile = true;
     } catch (IOException ioe) {
-      ResourceException re = new ResourceException("Filed to open GridShiftFile: " + gsf);
+      ResourceException re = new ResourceException("Filed to open NTv2GridShiftFile: " + gsf);
       re.setLinkedException(ioe);
     }
   }
 
-  public ManagedConnectionImpl(GridShiftFile gsf) throws ResourceException {
+  public ManagedConnectionImpl(NTv2GridShiftFile gsf) throws ResourceException {
     gridShiftFile = gsf;
     randomFile = false;
   }
@@ -89,7 +89,7 @@ public class ManagedConnectionImpl implements ManagedConnection {
         gridShiftFile = null;
       }
     } catch (IOException ioe) {
-      ResourceException re = new ResourceException("Failed to close GridShiftFile");
+      ResourceException re = new ResourceException("Failed to close NTv2GridShiftFile");
       re.setLinkedException(ioe);
     }
   }
@@ -146,11 +146,11 @@ public class ManagedConnectionImpl implements ManagedConnection {
    * This is a non CCI method to facilitate more compact usage of the jGridshift API
    * <p>Shift a coordinate in the Forward direction of the Grid Shift File.</p>
    *
-   * @param gs A GridShift object containing the coordinate to shift
+   * @param gs A NTv2GridShift object containing the coordinate to shift
    * @return True if the coordinate is within a Sub Grid, false if not
    * @throws ResourceException
    */
-  public boolean gridShiftForward(GridShift gs) throws ResourceException {
+  public boolean gridShiftForward(NTv2GridShift gs) throws ResourceException {
     try {
       return gridShiftFile.gridShiftForward(gs);
     } catch (IOException ioe) {
@@ -164,11 +164,11 @@ public class ManagedConnectionImpl implements ManagedConnection {
    * This is a non CCI method to facilitate more compact usage of the jGridshift API
    * <p>Shift a coordinate in the Reverse direction of the Grid Shift File.
    *
-   * @param gs A GridShift object containing the coordinate to shift
+   * @param gs A NTv2GridShift object containing the coordinate to shift
    * @return True if the coordinate is within a Sub Grid, false if not
    * @throws ResourceException
    */
-  public boolean gridShiftReverse(GridShift gs) throws ResourceException {
+  public boolean gridShiftReverse(NTv2GridShift gs) throws ResourceException {
     try {
       return gridShiftFile.gridShiftReverse(gs);
     } catch (IOException ioe) {

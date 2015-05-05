@@ -44,7 +44,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.text.JTextComponent;
 
-import au.com.objectix.jgridshift.GridShift;
+import au.com.objectix.jgridshift.NTv2GridShift;
 
 /**
  * @author peter
@@ -52,7 +52,7 @@ import au.com.objectix.jgridshift.GridShift;
 public class GuiPanel extends JPanel {
 
   private static final long serialVersionUID = -4438339666831365487L;
-  private static final String NOT_GSF = "Not a valid GridShift File";
+  private static final String NOT_GSF = "Not a valid NTv2GridShift File";
   private static final String DEGREE = "Degrees (Positive East Lon)";
   private static final String SECOND = "Seconds (Positive West Lon)";
   private static final String DMS = "DMS (Positive East Lon)";
@@ -68,7 +68,7 @@ public class GuiPanel extends JPanel {
   private JLabel filler2 = new JLabel("         ");
   private JFileChooser fileChooser = new JFileChooser();
   private Gui gui;
-  private GridShift gridShift = new GridShift();
+  private NTv2GridShift gridShift = new NTv2GridShift();
 
   private JPanel fromPanel = new JPanel(new BorderLayout());
   private JLabel fromLabel = new JLabel("From Coordinate  ");

@@ -29,7 +29,7 @@ import javax.resource.ResourceException;
 
 import au.com.objectix.jgridshift.jca.GridShiftConnectionFactory;
 import au.com.objectix.jgridshift.jca.GridShiftConnection;
-import au.com.objectix.jgridshift.GridShift;
+import au.com.objectix.jgridshift.NTv2GridShift;
 
 /**
  * Implementation of the sample jgridshift web service.
@@ -54,7 +54,7 @@ public abstract class JGridShiftBean implements SessionBean {
    * @return the shifted coordinate
    */
   public String gridShiftForward(Double latSeconds, Double lonPositiveWestSeconds) throws ResourceException {
-    GridShift gs = new GridShift();
+    NTv2GridShift gs = new NTv2GridShift();
     gs.setLatSeconds(latSeconds.doubleValue());
     gs.setLonPositiveWestSeconds(lonPositiveWestSeconds.doubleValue());
     GridShiftConnection gsConn = null;
@@ -78,7 +78,7 @@ public abstract class JGridShiftBean implements SessionBean {
    * @return the shifted coordinate
    */
   public String gridShiftReverse(Double latSeconds, Double lonPositiveWestSeconds) throws ResourceException {
-    GridShift gs = new GridShift();
+    NTv2GridShift gs = new NTv2GridShift();
     gs.setLatSeconds(latSeconds.doubleValue());
     gs.setLonPositiveWestSeconds(lonPositiveWestSeconds.doubleValue());
     GridShiftConnection gsConn = null;
@@ -102,7 +102,7 @@ public abstract class JGridShiftBean implements SessionBean {
    * @return the shifted coordinate
    */
   public Coordinate gridShiftForwardTyped(Coordinate coord) throws ResourceException {
-    GridShift gs = new GridShift();
+    NTv2GridShift gs = new NTv2GridShift();
     gs.setLatSeconds(coord.getLatSeconds());
     gs.setLonPositiveWestSeconds(coord.getLonPositiveWestSeconds());
     GridShiftConnection gsConn = null;
@@ -128,7 +128,7 @@ public abstract class JGridShiftBean implements SessionBean {
    * @return the shifted coordinate
    */
   public Coordinate gridShiftReverseTyped(Coordinate coord) throws ResourceException {
-    GridShift gs = new GridShift();
+    NTv2GridShift gs = new NTv2GridShift();
     gs.setLatSeconds(coord.getLatSeconds());
     gs.setLonPositiveWestSeconds(coord.getLonPositiveWestSeconds());
     GridShiftConnection gsConn = null;
@@ -170,7 +170,7 @@ public abstract class JGridShiftBean implements SessionBean {
       InitialContext ic = new InitialContext();
       gsFactory = (GridShiftConnectionFactory)ic.lookup("java:/ra/jgridshift");
     } catch (Exception e) {
-      throw new EJBException("Failed to lookup GridShift Connection Factory", e);
+      throw new EJBException("Failed to lookup NTv2GridShift Connection Factory", e);
     }
   }
 }

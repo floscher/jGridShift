@@ -23,10 +23,10 @@ import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 
-import au.com.objectix.jgridshift.SubGrid;
+import au.com.objectix.jgridshift.NTv2SubGrid;
 
 /**
- * A special purpose TreeModel for a SubGrid tree.
+ * A special purpose TreeModel for a NTv2SubGrid tree.
  *
  * @author Peter Yuill
  */
@@ -37,7 +37,7 @@ public class SubGridTreeModel implements TreeModel {
   private static final int MIN_LON = 2;
   private static final int MAX_LON = 3;
 
-  private SubGrid[] subGridTree;
+  private NTv2SubGrid[] subGridTree;
   private RootNode root;
 
   /**
@@ -51,7 +51,7 @@ public class SubGridTreeModel implements TreeModel {
    * Construct a model for an array of top level SubGrids with
    * child grids set.
    */
-  public SubGridTreeModel(SubGrid[] subGridTree) {
+  public SubGridTreeModel(NTv2SubGrid[] subGridTree) {
     this.subGridTree = subGridTree;
     root = new RootNode(subGridTree.length);
   }
@@ -70,7 +70,7 @@ public class SubGridTreeModel implements TreeModel {
     if (parent == root) {
       return subGridTree[index];
     } else {
-      SubGrid parentSubGrid = (SubGrid)parent;
+      NTv2SubGrid parentSubGrid = (NTv2SubGrid)parent;
       if (index < 4) {
         switch (index) {
           case MIN_LAT :
@@ -97,7 +97,7 @@ public class SubGridTreeModel implements TreeModel {
     if (parent == root) {
       return root.getNodeCount();
     } else {
-      return ((SubGrid)parent).getSubGridCount() + 4;
+      return ((NTv2SubGrid)parent).getSubGridCount() + 4;
     }
   }
 
@@ -134,7 +134,7 @@ public class SubGridTreeModel implements TreeModel {
     } else if (child instanceof DimensionNode){
       return ((DimensionNode)child).getType();
     } else {
-      SubGrid parentSubGrid = (SubGrid)parent;
+      NTv2SubGrid parentSubGrid = (NTv2SubGrid)parent;
       for (int i = 0; i < parentSubGrid.getSubGridCount(); i++) {
         if (parentSubGrid.getSubGrid(i) == child) {
           return i;
