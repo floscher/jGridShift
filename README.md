@@ -5,7 +5,7 @@ Run
 ```shell
 ./gradlew build
 ```
-to produce `build/distributions/jgridshift-x.y.zip`, `build/libs/jgridshift-api-x.y.jar` and `build/libs/jgridshift-gui-x.y.jar`.
+to produce `build/distributions/jgridshift-x.y.zip` and `build/libs/jgridshift-api-x.y.jar`
 
 If you want to open the project in Eclipse, first run
 ```shell

@@ -21,7 +21,6 @@ package au.com.objectix.jgridshift;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.RandomAccessFile;
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
@@ -30,11 +29,12 @@ import java.util.Arrays;
  * Models the NTv2 Sub Grid within a Grid Shift File
  *
  * @author Peter Yuill
+ * Modified for JOSM :
+ * - removed the RandomAccessFile mode (Pieren)
  */
 public class NTv2SubGrid implements Cloneable, Serializable {
 
   private static final long serialVersionUID = 1887278896684381292L;
-  private static final int REC_SIZE = 16;
 
   private String subGridName;
   private String parentSubGridName;
@@ -55,9 +55,6 @@ public class NTv2SubGrid implements Cloneable, Serializable {
   private float[] latAccuracy;
   private float[] lonAccuracy;
 
-  private RandomAccessFile raf;
-  private long subGridOffset;
-  boolean bigEndian;
   private NTv2SubGrid[] subGrid;
 
   /**
@@ -152,61 +149,6 @@ public class NTv2SubGrid implements Cloneable, Serializable {
   }
 
   /**
-   * Construct a Sub Grid from a RandomAccessFile. Only the headers
-   * are loaded into this object, the node data is accessed directly
-   * from the RandomAccessFile.
-   *
-   * @param in NTv2GridShiftFile RandomAccessFile
-   * @param bigEndian is the file bigEndian?
-   * @throws Exception
-   */
-  public NTv2SubGrid(RandomAccessFile raf, long subGridOffset, boolean bigEndian) throws IOException {
-    this.raf = raf;
-    this.subGridOffset = subGridOffset;
-    this.bigEndian = bigEndian;
-    raf.seek(subGridOffset);
-    byte[] b8 = new byte[8];
-    raf.read(b8);
-    raf.read(b8);
-    subGridName = new String(b8).trim();
-    raf.read(b8);
-    raf.read(b8);
-    parentSubGridName = new String(b8).trim();
-    raf.read(b8);
-    raf.read(b8);
-    created = new String(b8);
-    raf.read(b8);
-    raf.read(b8);
-    updated = new String(b8);
-    raf.read(b8);
-    raf.read(b8);
-    minLat = NTv2Util.getDouble(b8, bigEndian);
-    raf.read(b8);
-    raf.read(b8);
-    maxLat = NTv2Util.getDouble(b8, bigEndian);
-    raf.read(b8);
-    raf.read(b8);
-    minLon = NTv2Util.getDouble(b8, bigEndian);
-    raf.read(b8);
-    raf.read(b8);
-    maxLon = NTv2Util.getDouble(b8, bigEndian);
-    raf.read(b8);
-    raf.read(b8);
-    latInterval = NTv2Util.getDouble(b8, bigEndian);
-    raf.read(b8);
-    raf.read(b8);
-    lonInterval = NTv2Util.getDouble(b8, bigEndian);
-    lonColumnCount = 1 + (int)((maxLon - minLon) / lonInterval);
-    latRowCount = 1 + (int)((maxLat - minLat) / latInterval);
-    raf.read(b8);
-    raf.read(b8);
-    nodeCount = NTv2Util.getInt(b8, bigEndian);
-    if (nodeCount != lonColumnCount * latRowCount) {
-      throw new IllegalStateException("NTv2SubGrid " + subGridName + " has inconsistent grid dimesions");
-    }
-  }
-
-  /**
    * Tests if a specified coordinate is within this Sub Grid
    * or one of its Sub Grids. If the coordinate is outside
    * this Sub Grid, null is returned. If the coordinate is
@@ -276,9 +218,8 @@ public class NTv2SubGrid implements Cloneable, Serializable {
    * <p>This method is thread safe for both memory based and file based node data.
    * @param gs NTv2GridShift object containing the coordinate to shift and the shift values
    * @return the NTv2GridShift object supplied, with values updated.
-   * @throws IOException
    */
-  public NTv2GridShift interpolateGridShift(NTv2GridShift gs) throws IOException {
+  public NTv2GridShift interpolateGridShift(NTv2GridShift gs) {
     int lonIndex = (int)((gs.getLonPositiveWestSeconds() - minLon) / lonInterval);
     int latIndex = (int)((gs.getLatSeconds() - minLat) / latInterval);
 
@@ -292,81 +233,22 @@ public class NTv2SubGrid implements Cloneable, Serializable {
     int indexC = indexA + lonColumnCount;
     int indexD = indexC + 1;
 
-    if (raf == null) {
-      gs.setLonShiftPositiveWestSeconds(interpolate(lonShift[indexA], lonShift[indexB], lonShift[indexC], lonShift[indexD], X, Y));
+    gs.setLonShiftPositiveWestSeconds(interpolate(lonShift[indexA], lonShift[indexB], lonShift[indexC], lonShift[indexD], X, Y));
 
-      gs.setLatShiftSeconds(interpolate(latShift[indexA], latShift[indexB], latShift[indexC], latShift[indexD], X, Y));
+    gs.setLatShiftSeconds(interpolate(latShift[indexA], latShift[indexB], latShift[indexC], latShift[indexD], X, Y));
 
-      if (lonAccuracy == null) {
-        gs.setLonAccuracyAvailable(false);
-      } else {
-        gs.setLonAccuracyAvailable(true);
-        gs.setLonAccuracySeconds(interpolate(lonAccuracy[indexA], lonAccuracy[indexB], lonAccuracy[indexC], lonAccuracy[indexD], X, Y));
-      }
-
-      if (latAccuracy == null) {
-        gs.setLatAccuracyAvailable(false);
-      } else {
-        gs.setLatAccuracyAvailable(true);
-        gs.setLatAccuracySeconds(interpolate(latAccuracy[indexA], latAccuracy[indexB], latAccuracy[indexC], latAccuracy[indexD], X, Y));
-      }
+    if (lonAccuracy == null) {
+      gs.setLonAccuracyAvailable(false);
     } else {
-      synchronized(raf) {
-        byte[] b4 = new byte[4];
-        long nodeOffset = subGridOffset + (11 * REC_SIZE) + (indexA * REC_SIZE);
-        raf.seek(nodeOffset);
-        raf.read(b4);
-        float latShiftA = NTv2Util.getFloat(b4, bigEndian);
-        raf.read(b4);
-        float lonShiftA = NTv2Util.getFloat(b4, bigEndian);
-        raf.read(b4);
-        float latAccuracyA = NTv2Util.getFloat(b4, bigEndian);
-        raf.read(b4);
-        float lonAccuracyA = NTv2Util.getFloat(b4, bigEndian);
+      gs.setLonAccuracyAvailable(true);
+      gs.setLonAccuracySeconds(interpolate(lonAccuracy[indexA], lonAccuracy[indexB], lonAccuracy[indexC], lonAccuracy[indexD], X, Y));
+    }
 
-        nodeOffset = subGridOffset + (11 * REC_SIZE) + (indexB * REC_SIZE);
-        raf.seek(nodeOffset);
-        raf.read(b4);
-        float latShiftB = NTv2Util.getFloat(b4, bigEndian);
-        raf.read(b4);
-        float lonShiftB = NTv2Util.getFloat(b4, bigEndian);
-        raf.read(b4);
-        float latAccuracyB = NTv2Util.getFloat(b4, bigEndian);
-        raf.read(b4);
-        float lonAccuracyB = NTv2Util.getFloat(b4, bigEndian);
-
-        nodeOffset = subGridOffset + (11 * REC_SIZE) + (indexC * REC_SIZE);
-        raf.seek(nodeOffset);
-        raf.read(b4);
-        float latShiftC = NTv2Util.getFloat(b4, bigEndian);
-        raf.read(b4);
-        float lonShiftC = NTv2Util.getFloat(b4, bigEndian);
-        raf.read(b4);
-        float latAccuracyC = NTv2Util.getFloat(b4, bigEndian);
-        raf.read(b4);
-        float lonAccuracyC = NTv2Util.getFloat(b4, bigEndian);
-
-        nodeOffset = subGridOffset + (11 * REC_SIZE) + (indexD * REC_SIZE);
-        raf.seek(nodeOffset);
-        raf.read(b4);
-        float latShiftD = NTv2Util.getFloat(b4, bigEndian);
-        raf.read(b4);
-        float lonShiftD = NTv2Util.getFloat(b4, bigEndian);
-        raf.read(b4);
-        float latAccuracyD = NTv2Util.getFloat(b4, bigEndian);
-        raf.read(b4);
-        float lonAccuracyD = NTv2Util.getFloat(b4, bigEndian);
-
-        gs.setLonShiftPositiveWestSeconds(interpolate(lonShiftA, lonShiftB, lonShiftC, lonShiftD, X, Y));
-
-        gs.setLatShiftSeconds(interpolate(latShiftA, latShiftB, latShiftC, latShiftD, X, Y));
-
-        gs.setLonAccuracyAvailable(true);
-        gs.setLonAccuracySeconds(interpolate(lonAccuracyA, lonAccuracyB, lonAccuracyC, lonAccuracyD, X, Y));
-
-        gs.setLatAccuracyAvailable(true);
-        gs.setLatAccuracySeconds(interpolate(latAccuracyA, latAccuracyB, latAccuracyC, latAccuracyD, X, Y));
-      }
+    if (latAccuracy == null) {
+      gs.setLatAccuracyAvailable(false);
+    } else {
+      gs.setLatAccuracyAvailable(true);
+      gs.setLatAccuracySeconds(interpolate(latAccuracy[indexA], latAccuracy[indexB], latAccuracy[indexC], latAccuracy[indexD], X, Y));
     }
     return gs;
   }
@@ -436,20 +318,17 @@ public class NTv2SubGrid implements Cloneable, Serializable {
 
   /**
    * Make a deep clone of this Sub Grid
+   * @throws CloneNotSupportedException
    */
   @Override
-  public Object clone() {
-    NTv2SubGrid clone = null;
-    try {
-      clone = (NTv2SubGrid)super.clone();
-      // Do a deep clone of the sub grids
-      if (subGrid != null) {
-        clone.subGrid = new NTv2SubGrid[subGrid.length];
-        for (int i = 0; i < subGrid.length; i++) {
-          clone.subGrid[i] = (NTv2SubGrid)subGrid[i].clone();
-        }
+  public Object clone() throws CloneNotSupportedException {
+    NTv2SubGrid clone = (NTv2SubGrid)super.clone();
+    // Do a deep clone of the sub grids
+    if (subGrid != null) {
+      clone.subGrid = new NTv2SubGrid[subGrid.length];
+      for (int i = 0; i < subGrid.length; i++) {
+        clone.subGrid[i] = (NTv2SubGrid)subGrid[i].clone();
       }
-    } catch (CloneNotSupportedException cnse) {
     }
     return clone;
   }

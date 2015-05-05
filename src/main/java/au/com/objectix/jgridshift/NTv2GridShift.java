@@ -53,6 +53,17 @@ public class NTv2GridShift implements Serializable {
   public NTv2GridShift() {}
 
   /**
+   * @param lat  the south-north position in degrees where valid values are in the [-90,90]
+   *             (positive values are north of equator)
+   * @param lon  the west-east position in degrees where valid values are in the [-180,180]
+   *             (positive values are east of prime meridian)
+   */
+  public NTv2GridShift(double lat, double lon) {
+    setLatDegrees(lat);
+    setLonPositiveEastDegrees(lon);
+  }
+
+  /**
    * Data access function for latitude value
    * @return latitude in seconds
    */
