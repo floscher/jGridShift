@@ -35,7 +35,7 @@ public class ManagedConnectionMetaDataImpl implements ManagedConnectionMetaData 
   }
 
   public String getEISProductVersion() throws ResourceException {
-    return "1.0.1";
+    return "2.0.0";
   }
 
   public int getMaxConnections() throws ResourceException {
