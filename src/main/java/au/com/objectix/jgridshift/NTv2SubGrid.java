@@ -33,7 +33,7 @@ import java.util.Arrays;
  */
 public class NTv2SubGrid implements Cloneable, Serializable {
 
-  private static final long serialVersionUID = 1887278896684381292L;
+  private static final long serialVersionUID = 1L;
   private static final int REC_SIZE = 16;
 
   private String subGridName;
@@ -72,40 +72,40 @@ public class NTv2SubGrid implements Cloneable, Serializable {
   public NTv2SubGrid(InputStream in, boolean bigEndian, boolean loadAccuracy) throws IOException {
     byte[] b8 = new byte[8];
     byte[] b4 = new byte[4];
-    in.read(b8);
-    in.read(b8);
+    NTv2Util.readBytes(in, b8);
+    NTv2Util.readBytes(in, b8);
     subGridName = new String(b8, StandardCharsets.UTF_8).trim();
-    in.read(b8);
-    in.read(b8);
+    NTv2Util.readBytes(in, b8);
+    NTv2Util.readBytes(in, b8);
     parentSubGridName = new String(b8, StandardCharsets.UTF_8).trim();
-    in.read(b8);
-    in.read(b8);
+    NTv2Util.readBytes(in, b8);
+    NTv2Util.readBytes(in, b8);
     created = new String(b8, StandardCharsets.UTF_8);
-    in.read(b8);
-    in.read(b8);
+    NTv2Util.readBytes(in, b8);
+    NTv2Util.readBytes(in, b8);
     updated = new String(b8, StandardCharsets.UTF_8);
-    in.read(b8);
-    in.read(b8);
+    NTv2Util.readBytes(in, b8);
+    NTv2Util.readBytes(in, b8);
     minLat = NTv2Util.getDouble(b8, bigEndian);
-    in.read(b8);
-    in.read(b8);
+    NTv2Util.readBytes(in, b8);
+    NTv2Util.readBytes(in, b8);
     maxLat = NTv2Util.getDouble(b8, bigEndian);
-    in.read(b8);
-    in.read(b8);
+    NTv2Util.readBytes(in, b8);
+    NTv2Util.readBytes(in, b8);
     minLon = NTv2Util.getDouble(b8, bigEndian);
-    in.read(b8);
-    in.read(b8);
+    NTv2Util.readBytes(in, b8);
+    NTv2Util.readBytes(in, b8);
     maxLon = NTv2Util.getDouble(b8, bigEndian);
-    in.read(b8);
-    in.read(b8);
+    NTv2Util.readBytes(in, b8);
+    NTv2Util.readBytes(in, b8);
     latInterval = NTv2Util.getDouble(b8, bigEndian);
-    in.read(b8);
-    in.read(b8);
+    NTv2Util.readBytes(in, b8);
+    NTv2Util.readBytes(in, b8);
     lonInterval = NTv2Util.getDouble(b8, bigEndian);
     lonColumnCount = 1 + (int)((maxLon - minLon) / lonInterval);
     latRowCount = 1 + (int)((maxLat - minLat) / latInterval);
-    in.read(b8);
-    in.read(b8);
+    NTv2Util.readBytes(in, b8);
+    NTv2Util.readBytes(in, b8);
     nodeCount = NTv2Util.getInt(b8, bigEndian);
     if (nodeCount != lonColumnCount * latRowCount) {
       throw new IllegalStateException("NTv2SubGrid " + subGridName + " has inconsistent grid dimesions");
@@ -118,37 +118,23 @@ public class NTv2SubGrid implements Cloneable, Serializable {
     }
 
     for (int i = 0; i < nodeCount; i++) {
-      latShift[i] = NTv2Util.getFloat(readBytes(in, 4), bigEndian);
-      lonShift[i] = NTv2Util.getFloat(readBytes(in, 4), bigEndian);
-      b4 = readBytes(in, 4);
+      // Read the grid file byte after byte. This is a workaround about a bug in
+      // certain VM which are not able to read byte blocks when the resource
+      // file is
+      // in a .jar file (Pieren)
+      NTv2Util.readBytes(in, b4, 1);
+      latShift[i] = NTv2Util.getFloat(b4, bigEndian);
+      NTv2Util.readBytes(in, b4, 1);
+      lonShift[i] = NTv2Util.getFloat(b4, bigEndian);
+      NTv2Util.readBytes(in, b4, 1);
       if (loadAccuracy) {
         latAccuracy[i] = NTv2Util.getFloat(b4, bigEndian);
       }
-      b4 = readBytes(in, 4);
+      NTv2Util.readBytes(in, b4, 1);
       if (loadAccuracy) {
         lonAccuracy[i] = NTv2Util.getFloat(b4, bigEndian);
       }
     }
-  }
-  /**
-   * Helper method for the constructor {@link #NTv2SubGrid(InputStream, boolean, boolean)}.
-   * It reads a number of bytes from an {@link InputStream} one byte after another.
-   *
-   * Read the grid file byte after byte. This is a workaround about a bug in
-   * certain VM which are not able to read byte blocks when the resource file is
-   * in a .jar file (Pieren)
-   * @param in the {@link InputStream} to read from
-   * @param numBytes the number of bytes to read
-   * @return the resulting byte-array
-   * @throws IOException
-   */
-  private byte[] readBytes(InputStream in, int numBytes) throws IOException {
-    int readBytes = 0;
-    byte[] result = new byte[numBytes];
-    while (readBytes <= numBytes-1) {
-      readBytes += in.read(result, readBytes, 1);
-    }
-    return result;
   }
 
   /**
@@ -166,40 +152,40 @@ public class NTv2SubGrid implements Cloneable, Serializable {
     this.bigEndian = bigEndian;
     raf.seek(subGridOffset);
     byte[] b8 = new byte[8];
-    raf.read(b8);
-    raf.read(b8);
+    NTv2Util.read(raf, b8);
+    NTv2Util.read(raf, b8);
     subGridName = new String(b8).trim();
-    raf.read(b8);
-    raf.read(b8);
+    NTv2Util.read(raf, b8);
+    NTv2Util.read(raf, b8);
     parentSubGridName = new String(b8).trim();
-    raf.read(b8);
-    raf.read(b8);
+    NTv2Util.read(raf, b8);
+    NTv2Util.read(raf, b8);
     created = new String(b8);
-    raf.read(b8);
-    raf.read(b8);
+    NTv2Util.read(raf, b8);
+    NTv2Util.read(raf, b8);
     updated = new String(b8);
-    raf.read(b8);
-    raf.read(b8);
+    NTv2Util.read(raf, b8);
+    NTv2Util.read(raf, b8);
     minLat = NTv2Util.getDouble(b8, bigEndian);
-    raf.read(b8);
-    raf.read(b8);
+    NTv2Util.read(raf, b8);
+    NTv2Util.read(raf, b8);
     maxLat = NTv2Util.getDouble(b8, bigEndian);
-    raf.read(b8);
-    raf.read(b8);
+    NTv2Util.read(raf, b8);
+    NTv2Util.read(raf, b8);
     minLon = NTv2Util.getDouble(b8, bigEndian);
-    raf.read(b8);
-    raf.read(b8);
+    NTv2Util.read(raf, b8);
+    NTv2Util.read(raf, b8);
     maxLon = NTv2Util.getDouble(b8, bigEndian);
-    raf.read(b8);
-    raf.read(b8);
+    NTv2Util.read(raf, b8);
+    NTv2Util.read(raf, b8);
     latInterval = NTv2Util.getDouble(b8, bigEndian);
-    raf.read(b8);
-    raf.read(b8);
+    NTv2Util.read(raf, b8);
+    NTv2Util.read(raf, b8);
     lonInterval = NTv2Util.getDouble(b8, bigEndian);
     lonColumnCount = 1 + (int)((maxLon - minLon) / lonInterval);
     latRowCount = 1 + (int)((maxLat - minLat) / latInterval);
-    raf.read(b8);
-    raf.read(b8);
+    NTv2Util.read(raf, b8);
+    NTv2Util.read(raf, b8);
     nodeCount = NTv2Util.getInt(b8, bigEndian);
     if (nodeCount != lonColumnCount * latRowCount) {
       throw new IllegalStateException("NTv2SubGrid " + subGridName + " has inconsistent grid dimesions");
@@ -251,9 +237,9 @@ public class NTv2SubGrid implements Cloneable, Serializable {
 
   /**
    * Bi-Linear interpolation of four nearest node values as described in
-   * 'GDAit Software Architecture Manual' produced by the <a
-   * href='http://www.sli.unimelb.edu.au/gda94'>Geomatics
-   * Department of the University of Melbourne</a>
+   * 'GDAit Software Architecture Manual' produced by the
+   * <a href='http://www.dtpli.vic.gov.au/property-and-land-titles/geodesy/geocentric-datum-of-australia-1994-gda94/gda94-useful-tools'>
+   * Geomatics Department of the University of Melbourne</a>
    * @param a value at the A node
    * @param b value at the B node
    * @param c value at the C node
@@ -269,11 +255,10 @@ public class NTv2SubGrid implements Cloneable, Serializable {
 
   /**
    * Interpolate shift and accuracy values for a coordinate in the 'from' datum
-   * of the NTv2GridShiftFile. The algorithm is described in
-   * 'GDAit Software Architecture Manual' produced by the <a
-   * href='http://www.sli.unimelb.edu.au/gda94'>Geomatics
-   * Department of the University of Melbourne</a>
-   * <p>This method is thread safe for both memory based and file based node data.
+   * of the NTv2GridShiftFile. The algorithm is described in 'GDAit Software Architecture Manual' produced by the
+   * <a href='http://www.dtpli.vic.gov.au/property-and-land-titles/geodesy/geocentric-datum-of-australia-1994-gda94/gda94-useful-tools'>
+   * Geomatics Department of the University of Melbourne</a>
+   * <p>This method is thread safe for both memory based and file based node data.</p>
    * @param gs NTv2GridShift object containing the coordinate to shift and the shift values
    * @return the NTv2GridShift object supplied, with values updated.
    * @throws IOException
@@ -315,46 +300,46 @@ public class NTv2SubGrid implements Cloneable, Serializable {
         byte[] b4 = new byte[4];
         long nodeOffset = subGridOffset + (11 * REC_SIZE) + (indexA * REC_SIZE);
         raf.seek(nodeOffset);
-        raf.read(b4);
+        NTv2Util.read(raf, b4);
         float latShiftA = NTv2Util.getFloat(b4, bigEndian);
-        raf.read(b4);
+        NTv2Util.read(raf, b4);
         float lonShiftA = NTv2Util.getFloat(b4, bigEndian);
-        raf.read(b4);
+        NTv2Util.read(raf, b4);
         float latAccuracyA = NTv2Util.getFloat(b4, bigEndian);
-        raf.read(b4);
+        NTv2Util.read(raf, b4);
         float lonAccuracyA = NTv2Util.getFloat(b4, bigEndian);
 
         nodeOffset = subGridOffset + (11 * REC_SIZE) + (indexB * REC_SIZE);
         raf.seek(nodeOffset);
-        raf.read(b4);
+        NTv2Util.read(raf, b4);
         float latShiftB = NTv2Util.getFloat(b4, bigEndian);
-        raf.read(b4);
+        NTv2Util.read(raf, b4);
         float lonShiftB = NTv2Util.getFloat(b4, bigEndian);
-        raf.read(b4);
+        NTv2Util.read(raf, b4);
         float latAccuracyB = NTv2Util.getFloat(b4, bigEndian);
-        raf.read(b4);
+        NTv2Util.read(raf, b4);
         float lonAccuracyB = NTv2Util.getFloat(b4, bigEndian);
 
         nodeOffset = subGridOffset + (11 * REC_SIZE) + (indexC * REC_SIZE);
         raf.seek(nodeOffset);
-        raf.read(b4);
+        NTv2Util.read(raf, b4);
         float latShiftC = NTv2Util.getFloat(b4, bigEndian);
-        raf.read(b4);
+        NTv2Util.read(raf, b4);
         float lonShiftC = NTv2Util.getFloat(b4, bigEndian);
-        raf.read(b4);
+        NTv2Util.read(raf, b4);
         float latAccuracyC = NTv2Util.getFloat(b4, bigEndian);
-        raf.read(b4);
+        NTv2Util.read(raf, b4);
         float lonAccuracyC = NTv2Util.getFloat(b4, bigEndian);
 
         nodeOffset = subGridOffset + (11 * REC_SIZE) + (indexD * REC_SIZE);
         raf.seek(nodeOffset);
-        raf.read(b4);
+        NTv2Util.read(raf, b4);
         float latShiftD = NTv2Util.getFloat(b4, bigEndian);
-        raf.read(b4);
+        NTv2Util.read(raf, b4);
         float lonShiftD = NTv2Util.getFloat(b4, bigEndian);
-        raf.read(b4);
+        NTv2Util.read(raf, b4);
         float latAccuracyD = NTv2Util.getFloat(b4, bigEndian);
-        raf.read(b4);
+        NTv2Util.read(raf, b4);
         float lonAccuracyD = NTv2Util.getFloat(b4, bigEndian);
 
         gs.setLonShiftPositiveWestSeconds(interpolate(lonShiftA, lonShiftB, lonShiftC, lonShiftD, X, Y));
@@ -436,23 +421,21 @@ public class NTv2SubGrid implements Cloneable, Serializable {
 
   /**
    * Make a deep clone of this Sub Grid
+   * @throws CloneNotSupportedException
    */
   @Override
-  public Object clone() {
-    NTv2SubGrid clone = null;
-    try {
-      clone = (NTv2SubGrid)super.clone();
-      // Do a deep clone of the sub grids
-      if (subGrid != null) {
-        clone.subGrid = new NTv2SubGrid[subGrid.length];
-        for (int i = 0; i < subGrid.length; i++) {
-          clone.subGrid[i] = (NTv2SubGrid)subGrid[i].clone();
-        }
+  public Object clone() throws CloneNotSupportedException {
+    NTv2SubGrid clone = (NTv2SubGrid)super.clone();
+    // Do a deep clone of the sub grids
+    if (subGrid != null) {
+      clone.subGrid = new NTv2SubGrid[subGrid.length];
+      for (int i = 0; i < subGrid.length; i++) {
+        clone.subGrid[i] = (NTv2SubGrid)subGrid[i].clone();
       }
-    } catch (CloneNotSupportedException cnse) {
     }
     return clone;
   }
+
   /**
    * Get maximum latitude value
    * @return maximum latitude

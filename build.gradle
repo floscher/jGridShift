@@ -17,12 +17,13 @@ eclipse {
 }
 
 repositories {
-  mavenCentral();
+  mavenCentral()
 }
 
 dependencies {
   compile 'javax:javaee-api:7.0'
   compile 'org.apache.axis:axis:1.4'
+  testCompile 'junit:junit:4.12'
 }
 
 task mainZip(type: Zip) {

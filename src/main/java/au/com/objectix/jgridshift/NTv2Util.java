@@ -19,14 +19,61 @@
  */
 package au.com.objectix.jgridshift;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 /**
  * A set of static utility methods for reading the NTv2 file format
- *
- * @author Peter Yuill
  */
 public final class NTv2Util {
 
   private NTv2Util() {
+  }
+
+  /**
+   * Shorthand method for {@link #readBytes(InputStream, byte[], int)}.
+   * Calls {@link #readBytes(InputStream, byte[], int)} with an unlimited number of bytes per invocation of
+   * {@link InputStream#read(byte[], int, int)}.
+   * @param in the {@link InputStream} to read from
+   * @param buffer the byte array to write into
+   * @throws IOException If the end of the {@link InputStream} is reached before {@code buffer.length} bytes are read
+   *     or if the first byte cannot be read for any reason other than end of file, or if the input stream has been
+   *     closed, or if some other I/O error occurs
+   * @throws NullPointerException if {@code buffer} is null
+   */
+  public static void readBytes(InputStream in, byte[] buffer) throws IOException {
+    readBytes(in, buffer, Integer.MAX_VALUE);
+  }
+
+  /**
+   * Read a number of bytes from an InputStream into the given byte array.
+   * The number of read bytes is determined by the length of the given byte array.
+   * The number of bytes that are read per invocation of {@link InputStream#read(byte[], int, int)} can be limited by
+   * the parameter {@code maxBytesAtOnce}.
+   * @param in the {@link InputStream} to read from
+   * @param buffer the byte array to write into (must not be {@code null})
+   * @param maxBytesAtOnce
+   *     the maximum number of bytes that is read per invocation of {@link InputStream#read(byte[], int, int)}
+   * @throws IOException If the end of the {@link InputStream} is reached before {@code buffer.length} bytes are read
+   *     or if the first byte cannot be read for any reason other than end of file, or if the input stream has been
+   *     closed, or if some other I/O error occurs
+   * @throws NullPointerException if {@code buffer} is null
+   */
+  public static void readBytes(InputStream in, byte[] buffer, int maxBytesAtOnce) throws IOException {
+    if (buffer == null) {
+      throw new NullPointerException("The byte buffer for reading from InputStream must not be null!");
+    }
+
+    int pos = 0;
+    while (pos < buffer.length) {
+      int diff = in.read(buffer, pos, Math.min(buffer.length - pos, Math.max(1, maxBytesAtOnce)));
+      if (diff < 0) {
+        throw new IOException(String.format(
+          "Could only read %d of %d bytes, because the InputStream ended unexpectedly!", pos+diff, buffer.length
+        ));
+      }
+      pos += diff;
+    }
   }
 
   /**
@@ -98,7 +145,7 @@ public final class NTv2Util {
       i = getIntLE(b, 4);
       j = getIntLE(b, 0);
     }
-    long l = ((long)i << 32) | ((long)j & 0x00000000FFFFFFFFL);
+    long l = ((long)i << 32) | (j & 0x00000000FFFFFFFFL);
     return Double.longBitsToDouble(l);
   }
 
