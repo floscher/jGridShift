@@ -26,6 +26,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Models the NTv2 format Grid Shift File and exposes methods to shift
@@ -66,7 +67,7 @@ import java.util.List;
  */
 public class NTv2GridShiftFile implements Serializable {
 
-  private static final long serialVersionUID = -6327285995870612675L;
+  private static final long serialVersionUID = 1L;
   private int overviewHeaderCount;
   private int subGridHeaderCount;
   private int subGridCount;
@@ -106,12 +107,12 @@ public class NTv2GridShiftFile implements Serializable {
     fromEllipsoid = "";
     toEllipsoid = "";
     topLevelSubGrid = null;
-    in.read(b8);
+    NTv2Util.readBytes(in, b8);
     String overviewHeaderCountId = new String(b8, StandardCharsets.UTF_8);
     if (!"NUM_OREC".equals(overviewHeaderCountId)) {
       throw new IllegalArgumentException("Input file is not an NTv2 grid shift file");
     }
-    in.read(b8);
+    NTv2Util.readBytes(in, b8);
     overviewHeaderCount = NTv2Util.getIntBE(b8, 0);
     if (overviewHeaderCount == 11) {
       bigEndian = true;
@@ -123,36 +124,36 @@ public class NTv2GridShiftFile implements Serializable {
         throw new IllegalArgumentException("Input file is not an NTv2 grid shift file");
       }
     }
-    in.read(b8);
-    in.read(b8);
+    NTv2Util.readBytes(in, b8);
+    NTv2Util.readBytes(in, b8);
     subGridHeaderCount = NTv2Util.getInt(b8, bigEndian);
-    in.read(b8);
-    in.read(b8);
+    NTv2Util.readBytes(in, b8);
+    NTv2Util.readBytes(in, b8);
     subGridCount = NTv2Util.getInt(b8, bigEndian);
     NTv2SubGrid[] subGrid = new NTv2SubGrid[subGridCount];
-    in.read(b8);
-    in.read(b8);
+    NTv2Util.readBytes(in, b8);
+    NTv2Util.readBytes(in, b8);
     shiftType = new String(b8, StandardCharsets.UTF_8);
-    in.read(b8);
-    in.read(b8);
+    NTv2Util.readBytes(in, b8);
+    NTv2Util.readBytes(in, b8);
     version = new String(b8, StandardCharsets.UTF_8);
-    in.read(b8);
-    in.read(b8);
+    NTv2Util.readBytes(in, b8);
+    NTv2Util.readBytes(in, b8);
     fromEllipsoid = new String(b8, StandardCharsets.UTF_8);
-    in.read(b8);
-    in.read(b8);
+    NTv2Util.readBytes(in, b8);
+    NTv2Util.readBytes(in, b8);
     toEllipsoid = new String(b8, StandardCharsets.UTF_8);
-    in.read(b8);
-    in.read(b8);
+    NTv2Util.readBytes(in, b8);
+    NTv2Util.readBytes(in, b8);
     fromSemiMajorAxis = NTv2Util.getDouble(b8, bigEndian);
-    in.read(b8);
-    in.read(b8);
+    NTv2Util.readBytes(in, b8);
+    NTv2Util.readBytes(in, b8);
     fromSemiMinorAxis = NTv2Util.getDouble(b8, bigEndian);
-    in.read(b8);
-    in.read(b8);
+    NTv2Util.readBytes(in, b8);
+    NTv2Util.readBytes(in, b8);
     toSemiMajorAxis = NTv2Util.getDouble(b8, bigEndian);
-    in.read(b8);
-    in.read(b8);
+    NTv2Util.readBytes(in, b8);
+    NTv2Util.readBytes(in, b8);
     toSemiMinorAxis = NTv2Util.getDouble(b8, bigEndian);
 
     for (int i = 0; i < subGridCount; i++) {
@@ -171,7 +172,7 @@ public class NTv2GridShiftFile implements Serializable {
    */
   private NTv2SubGrid[] createSubGridTree(NTv2SubGrid[] subGrid) {
     int topLevelCount = 0;
-    HashMap<String, List<NTv2SubGrid>> subGridMap = new HashMap<>();
+    Map<String, List<NTv2SubGrid>> subGridMap = new HashMap<>();
     for (int i = 0; i < subGrid.length; i++) {
       if ("NONE".equalsIgnoreCase(subGrid[i].getParentSubGridName())) {
         topLevelCount++;
@@ -272,7 +273,7 @@ public class NTv2GridShiftFile implements Serializable {
   }
 
   public boolean isLoaded() {
-    return (topLevelSubGrid != null);
+    return topLevelSubGrid != null;
   }
 
   public void unload() {
