@@ -116,8 +116,7 @@ public class NTv2SubGrid implements Cloneable, Serializable {
 
     for (int i = 0; i < nodeCount; i++) {
       // Read the grid file byte after byte. This is a workaround about a bug in
-      // certain VM which are not able to read byte blocks when the resource
-      // file is
+      // certain VM which are not able to read byte blocks when the resource file is
       // in a .jar file (Pieren)
       NTv2Util.readBytes(in, b4, 1);
       latShift[i] = NTv2Util.getFloat(b4, bigEndian);
@@ -218,23 +217,23 @@ public class NTv2SubGrid implements Cloneable, Serializable {
     int indexC = indexA + lonColumnCount;
     int indexD = indexC + 1;
 
-    gs.setLonShiftPositiveWestSeconds(interpolate(lonShift[indexA], lonShift[indexB], lonShift[indexC], lonShift[indexD], X, Y));
+      gs.setLonShiftPositiveWestSeconds(interpolate(lonShift[indexA], lonShift[indexB], lonShift[indexC], lonShift[indexD], X, Y));
 
-    gs.setLatShiftSeconds(interpolate(latShift[indexA], latShift[indexB], latShift[indexC], latShift[indexD], X, Y));
+      gs.setLatShiftSeconds(interpolate(latShift[indexA], latShift[indexB], latShift[indexC], latShift[indexD], X, Y));
 
-    if (lonAccuracy == null) {
-      gs.setLonAccuracyAvailable(false);
-    } else {
-      gs.setLonAccuracyAvailable(true);
-      gs.setLonAccuracySeconds(interpolate(lonAccuracy[indexA], lonAccuracy[indexB], lonAccuracy[indexC], lonAccuracy[indexD], X, Y));
-    }
+      if (lonAccuracy == null) {
+        gs.setLonAccuracyAvailable(false);
+      } else {
+        gs.setLonAccuracyAvailable(true);
+        gs.setLonAccuracySeconds(interpolate(lonAccuracy[indexA], lonAccuracy[indexB], lonAccuracy[indexC], lonAccuracy[indexD], X, Y));
+      }
 
-    if (latAccuracy == null) {
-      gs.setLatAccuracyAvailable(false);
-    } else {
-      gs.setLatAccuracyAvailable(true);
-      gs.setLatAccuracySeconds(interpolate(latAccuracy[indexA], latAccuracy[indexB], latAccuracy[indexC], latAccuracy[indexD], X, Y));
-    }
+      if (latAccuracy == null) {
+        gs.setLatAccuracyAvailable(false);
+      } else {
+        gs.setLatAccuracyAvailable(true);
+        gs.setLatAccuracySeconds(interpolate(latAccuracy[indexA], latAccuracy[indexB], latAccuracy[indexC], latAccuracy[indexD], X, Y));
+      }
     return gs;
   }
 
@@ -276,29 +275,29 @@ public class NTv2SubGrid implements Cloneable, Serializable {
    * @return textual details about the sub grid
    */
   public String getDetails() {
-    StringBuilder buf = new StringBuilder("Sub Grid : ");
-    buf.append(subGridName);
-    buf.append("\nParent   : ");
-    buf.append(parentSubGridName);
-    buf.append("\nCreated  : ");
-    buf.append(created);
-    buf.append("\nUpdated  : ");
-    buf.append(updated);
-    buf.append("\nMin Lat  : ");
-    buf.append(minLat);
-    buf.append("\nMax Lat  : ");
-    buf.append(maxLat);
-    buf.append("\nMin Lon  : ");
-    buf.append(minLon);
-    buf.append("\nMax Lon  : ");
-    buf.append(maxLon);
-    buf.append("\nLat Intvl: ");
-    buf.append(latInterval);
-    buf.append("\nLon Intvl: ");
-    buf.append(lonInterval);
-    buf.append("\nNode Cnt : ");
-    buf.append(nodeCount);
-    return buf.toString();
+    return new StringBuilder("Sub Grid : ")
+      .append(subGridName)
+      .append("\nParent   : ")
+      .append(parentSubGridName)
+      .append("\nCreated  : ")
+      .append(created)
+      .append("\nUpdated  : ")
+      .append(updated)
+      .append("\nMin Lat  : ")
+      .append(minLat)
+      .append("\nMax Lat  : ")
+      .append(maxLat)
+      .append("\nMin Lon  : ")
+      .append(minLon)
+      .append("\nMax Lon  : ")
+      .append(maxLon)
+      .append("\nLat Intvl: ")
+      .append(latInterval)
+      .append("\nLon Intvl: ")
+      .append(lonInterval)
+      .append("\nNode Cnt : ")
+      .append(nodeCount)
+      .toString();
   }
 
   /**

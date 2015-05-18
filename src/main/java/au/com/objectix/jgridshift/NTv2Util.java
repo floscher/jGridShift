@@ -82,7 +82,7 @@ public final class NTv2Util {
    * @param i the index of the first data byte in the array
    * @return the int
    */
-  public static final int getIntLE(byte[] b, int i) {
+  public static int getIntLE(byte[] b, int i) {
     return (b[i++] & 0x000000FF) | ((b[i++] << 8) & 0x0000FF00) | ((b[i++] << 16) & 0x00FF0000) | (b[i] << 24);
   }
 
@@ -92,7 +92,7 @@ public final class NTv2Util {
    * @param i the index of the first data byte in the array
    * @return the int
    */
-  public static final int getIntBE(byte[] b, int i) {
+  public static int getIntBE(byte[] b, int i) {
     return (b[i++] << 24) | ((b[i++] << 16) & 0x00FF0000) | ((b[i++] << 8) & 0x0000FF00) | (b[i] & 0x000000FF);
   }
 
@@ -103,7 +103,7 @@ public final class NTv2Util {
    * @param bigEndian is the byte array Big Endian?
    * @return the int
    */
-  public static final int getInt(byte[] b, boolean bigEndian) {
+  public static int getInt(byte[] b, boolean bigEndian) {
     if (bigEndian) {
       return getIntBE(b, 0);
     } else {
@@ -118,7 +118,7 @@ public final class NTv2Util {
    * @param bigEndian is the byte array Big Endian?
    * @return the float
    */
-  public static final float getFloat(byte[] b, boolean bigEndian) {
+  public static float getFloat(byte[] b, boolean bigEndian) {
     int i = 0;
     if (bigEndian) {
       i = getIntBE(b, 0);
@@ -135,7 +135,7 @@ public final class NTv2Util {
    * @param bigEndian is the byte array Big Endian?
    * @return the double
    */
-  public static final double getDouble(byte[] b, boolean bigEndian) {
+  public static double getDouble(byte[] b, boolean bigEndian) {
     int i = 0;
     int j = 0;
     if (bigEndian) {
@@ -145,7 +145,8 @@ public final class NTv2Util {
       i = getIntLE(b, 4);
       j = getIntLE(b, 0);
     }
-    long l = ((long)i << 32) | (j & 0x00000000FFFFFFFFL);
+    long l = ((long)i << 32) |
+    (j & 0x00000000FFFFFFFFL);
     return Double.longBitsToDouble(l);
   }
 
