@@ -370,29 +370,29 @@ public class NTv2GridShiftFile implements Serializable {
 
   @Override
   public String toString() {
-    StringBuilder buff = new StringBuilder("Headers  : ");
-    buff.append(overviewHeaderCount)
-        .append("\nSub Hdrs : ")
-        .append(subGridHeaderCount)
-        .append("\nSub Grids: ")
-        .append(subGridCount)
-        .append("\nType     : ")
-        .append(shiftType)
-        .append("\nVersion  : ")
-        .append(version)
-        .append("\nFr Ellpsd: ")
-        .append(fromEllipsoid)
-        .append("\nTo Ellpsd: ")
-        .append(toEllipsoid)
-        .append("\nFr Maj Ax: ")
-        .append(fromSemiMajorAxis)
-        .append("\nFr Min Ax: ")
-        .append(fromSemiMinorAxis)
-        .append("\nTo Maj Ax: ")
-        .append(toSemiMajorAxis)
-        .append("\nTo Min Ax: ")
-        .append(toSemiMinorAxis);
-    return buff.toString();
+    return new StringBuilder("Headers  : ")
+      .append(overviewHeaderCount)
+      .append("\nSub Hdrs : ")
+      .append(subGridHeaderCount)
+      .append("\nSub Grids: ")
+      .append(subGridCount)
+      .append("\nType     : ")
+      .append(shiftType)
+      .append("\nVersion  : ")
+      .append(version)
+      .append("\nFr Ellpsd: ")
+      .append(fromEllipsoid)
+      .append("\nTo Ellpsd: ")
+      .append(toEllipsoid)
+      .append("\nFr Maj Ax: ")
+      .append(fromSemiMajorAxis)
+      .append("\nFr Min Ax: ")
+      .append(fromSemiMinorAxis)
+      .append("\nTo Maj Ax: ")
+      .append(toSemiMajorAxis)
+      .append("\nTo Min Ax: ")
+      .append(toSemiMinorAxis)
+      .toString();
   }
 
   /**
