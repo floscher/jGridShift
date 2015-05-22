@@ -201,9 +201,8 @@ public class NTv2SubGrid implements Cloneable, Serializable {
    * Geomatics Department of the University of Melbourne</a>
    * <p>This method is thread safe for both memory based and file based node data.</p>
    * @param gs NTv2GridShift object containing the coordinate to shift and the shift values
-   * @return the NTv2GridShift object supplied, with values updated.
    */
-  public NTv2GridShift interpolateGridShift(NTv2GridShift gs) {
+  public void interpolateGridShift(NTv2GridShift gs) {
     int lonIndex = (int)((gs.getLonPositiveWestSeconds() - minLon) / lonInterval);
     int latIndex = (int)((gs.getLatSeconds() - minLat) / latInterval);
 
@@ -217,24 +216,23 @@ public class NTv2SubGrid implements Cloneable, Serializable {
     int indexC = indexA + lonColumnCount;
     int indexD = indexC + 1;
 
-      gs.setLonShiftPositiveWestSeconds(interpolate(lonShift[indexA], lonShift[indexB], lonShift[indexC], lonShift[indexD], X, Y));
+    gs.setLonShiftPositiveWestSeconds(interpolate(lonShift[indexA], lonShift[indexB], lonShift[indexC], lonShift[indexD], X, Y));
 
-      gs.setLatShiftSeconds(interpolate(latShift[indexA], latShift[indexB], latShift[indexC], latShift[indexD], X, Y));
+    gs.setLatShiftSeconds(interpolate(latShift[indexA], latShift[indexB], latShift[indexC], latShift[indexD], X, Y));
 
-      if (lonAccuracy == null) {
-        gs.setLonAccuracyAvailable(false);
-      } else {
-        gs.setLonAccuracyAvailable(true);
-        gs.setLonAccuracySeconds(interpolate(lonAccuracy[indexA], lonAccuracy[indexB], lonAccuracy[indexC], lonAccuracy[indexD], X, Y));
-      }
+    if (lonAccuracy == null) {
+      gs.setLonAccuracyAvailable(false);
+    } else {
+      gs.setLonAccuracyAvailable(true);
+      gs.setLonAccuracySeconds(interpolate(lonAccuracy[indexA], lonAccuracy[indexB], lonAccuracy[indexC], lonAccuracy[indexD], X, Y));
+    }
 
-      if (latAccuracy == null) {
-        gs.setLatAccuracyAvailable(false);
-      } else {
-        gs.setLatAccuracyAvailable(true);
-        gs.setLatAccuracySeconds(interpolate(latAccuracy[indexA], latAccuracy[indexB], latAccuracy[indexC], latAccuracy[indexD], X, Y));
-      }
-    return gs;
+    if (latAccuracy == null) {
+      gs.setLatAccuracyAvailable(false);
+    } else {
+      gs.setLatAccuracyAvailable(true);
+      gs.setLatAccuracySeconds(interpolate(latAccuracy[indexA], latAccuracy[indexB], latAccuracy[indexC], latAccuracy[indexD], X, Y));
+    }
   }
 
   public String getParentSubGridName() {
