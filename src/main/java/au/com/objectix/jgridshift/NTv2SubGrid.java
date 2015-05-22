@@ -259,10 +259,9 @@ public class NTv2SubGrid implements Cloneable, Serializable {
    * Geomatics Department of the University of Melbourne</a>
    * <p>This method is thread safe for both memory based and file based node data.</p>
    * @param gs NTv2GridShift object containing the coordinate to shift and the shift values
-   * @return the NTv2GridShift object supplied, with values updated.
    * @throws IOException
    */
-  public NTv2GridShift interpolateGridShift(NTv2GridShift gs) throws IOException {
+  public void interpolateGridShift(NTv2GridShift gs) throws IOException {
     int lonIndex = (int)((gs.getLonPositiveWestSeconds() - minLon) / lonInterval);
     int latIndex = (int)((gs.getLatSeconds() - minLat) / latInterval);
 
@@ -352,7 +351,6 @@ public class NTv2SubGrid implements Cloneable, Serializable {
         gs.setLatAccuracySeconds(interpolate(latAccuracyA, latAccuracyB, latAccuracyC, latAccuracyD, X, Y));
       }
     }
-    return gs;
   }
 
   public String getParentSubGridName() {
