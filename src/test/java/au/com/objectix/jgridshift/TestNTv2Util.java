@@ -16,7 +16,7 @@ public class TestNTv2Util {
   /**
    * Test method for {@link NTv2Util#readBytes(InputStream, byte[])}.
    */
-  @Test(expected = IllegalArgumentException.class)
+  @Test(expected = NullPointerException.class)
   public final void testReadBytesBufferNull() throws IOException {
     ByteArrayInputStream bais = new ByteArrayInputStream(new byte[9]);
     NTv2Util.readBytes(bais, null);
