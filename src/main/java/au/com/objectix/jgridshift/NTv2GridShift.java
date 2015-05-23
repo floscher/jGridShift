@@ -50,7 +50,9 @@ public class NTv2GridShift implements Serializable {
   /**
    * Constructs a new {@code NTv2GridShift}.
    */
-  public NTv2GridShift() {}
+  public NTv2GridShift() {
+    // contents can be set later with setters
+  }
 
   /**
    * Data access function for latitude value

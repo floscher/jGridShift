@@ -89,12 +89,6 @@ public class NTv2GridShiftFile implements Serializable {
   private transient RandomAccessFile raf;
 
   /**
-   * Constructs a new {@code NTv2GridShiftFile}.
-   */
-  public NTv2GridShiftFile() {
-  }
-
-  /**
    * Load a Grid Shift File from an InputStream. The Grid Shift node data is
    * stored in Java arrays, which will occupy about the same memory as the
    * original file with accuracy data included, and about half that with
