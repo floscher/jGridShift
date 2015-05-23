@@ -50,9 +50,12 @@ public class NTv2GridShift implements Serializable {
   /**
    * Constructs a new {@code NTv2GridShift}.
    */
-  public NTv2GridShift() {}
+  public NTv2GridShift() {
+    // contents can be set later with setters
+  }
 
   /**
+   * Constructs a new {@link NTV2GridShift} from a latitude and a longitude
    * @param lat  the south-north position in degrees where valid values are in the [-90,90]
    *             (positive values are north of equator)
    * @param lon  the west-east position in degrees where valid values are in the [-180,180]
