@@ -99,8 +99,8 @@ public class NTv2SubGrid implements Cloneable, Serializable {
     NTv2Util.readBytes(in, b8);
     NTv2Util.readBytes(in, b8);
     lonInterval = NTv2Util.getDouble(b8, bigEndian);
-    lonColumnCount = 1 + (int)((maxLon - minLon) / lonInterval);
-    latRowCount = 1 + (int)((maxLat - minLat) / latInterval);
+    lonColumnCount = 1 + (int) ((maxLon - minLon) / lonInterval);
+    latRowCount = 1 + (int) ((maxLat - minLat) / latInterval);
     NTv2Util.readBytes(in, b8);
     NTv2Util.readBytes(in, b8);
     nodeCount = NTv2Util.getInt(b8, bigEndian);
@@ -116,8 +116,7 @@ public class NTv2SubGrid implements Cloneable, Serializable {
 
     for (int i = 0; i < nodeCount; i++) {
       // Read the grid file byte after byte. This is a workaround about a bug in
-      // certain VM which are not able to read byte blocks when the resource file is
-      // in a .jar file (Pieren)
+      // certain VM which are not able to read byte blocks when the resource file is in a .jar file (Pieren)
       NTv2Util.readBytes(in, b4, 1);
       latShift[i] = NTv2Util.getFloat(b4, bigEndian);
       NTv2Util.readBytes(in, b4, 1);
@@ -185,13 +184,15 @@ public class NTv2SubGrid implements Cloneable, Serializable {
    * @param b value at the B node
    * @param c value at the C node
    * @param d value at the D node
-   * @param X Longitude factor
-   * @param Y Latitude factor
+   * @param x Longitude factor
+   * @param y Latitude factor
    * @return interpolated value
    */
-  private final double interpolate(float a, float b, float c, float d, double X, double Y) {
-    return (double)a + (((double)b - (double)a) * X) + (((double)c - (double)a) * Y) +
-      (((double)a + (double)d - (double)b - (double)c) * X * Y);
+  private double interpolate(float a, float b, float c, float d, double x, double y) {
+    return a +
+      (((double) b - (double) a) * x) +
+      (((double) c - (double) a) * y) +
+      (((double) a + (double) d - b - c) * x * y);
   }
 
   /**
@@ -203,11 +204,11 @@ public class NTv2SubGrid implements Cloneable, Serializable {
    * @param gs NTv2GridShift object containing the coordinate to shift and the shift values
    */
   public void interpolateGridShift(NTv2GridShift gs) {
-    int lonIndex = (int)((gs.getLonPositiveWestSeconds() - minLon) / lonInterval);
-    int latIndex = (int)((gs.getLatSeconds() - minLat) / latInterval);
+    int lonIndex = (int) ((gs.getLonPositiveWestSeconds() - minLon) / lonInterval);
+    int latIndex = (int) ((gs.getLatSeconds() - minLat) / latInterval);
 
-    double X = (gs.getLonPositiveWestSeconds() - (minLon + (lonInterval * lonIndex))) / lonInterval;
-    double Y = (gs.getLatSeconds() - (minLat + (latInterval * latIndex))) / latInterval;
+    double x = (gs.getLonPositiveWestSeconds() - (minLon + (lonInterval * lonIndex))) / lonInterval;
+    double y = (gs.getLatSeconds() - (minLat + (latInterval * latIndex))) / latInterval;
 
     // Find the nodes at the four corners of the cell
 
@@ -216,22 +217,22 @@ public class NTv2SubGrid implements Cloneable, Serializable {
     int indexC = indexA + lonColumnCount;
     int indexD = indexC + 1;
 
-    gs.setLonShiftPositiveWestSeconds(interpolate(lonShift[indexA], lonShift[indexB], lonShift[indexC], lonShift[indexD], X, Y));
+    gs.setLonShiftPositiveWestSeconds(interpolate(lonShift[indexA], lonShift[indexB], lonShift[indexC], lonShift[indexD], x, y));
 
-    gs.setLatShiftSeconds(interpolate(latShift[indexA], latShift[indexB], latShift[indexC], latShift[indexD], X, Y));
+    gs.setLatShiftSeconds(interpolate(latShift[indexA], latShift[indexB], latShift[indexC], latShift[indexD], x, y));
 
     if (lonAccuracy == null) {
       gs.setLonAccuracyAvailable(false);
     } else {
       gs.setLonAccuracyAvailable(true);
-      gs.setLonAccuracySeconds(interpolate(lonAccuracy[indexA], lonAccuracy[indexB], lonAccuracy[indexC], lonAccuracy[indexD], X, Y));
+      gs.setLonAccuracySeconds(interpolate(lonAccuracy[indexA], lonAccuracy[indexB], lonAccuracy[indexC], lonAccuracy[indexD], x, y));
     }
 
     if (latAccuracy == null) {
       gs.setLatAccuracyAvailable(false);
     } else {
       gs.setLatAccuracyAvailable(true);
-      gs.setLatAccuracySeconds(interpolate(latAccuracy[indexA], latAccuracy[indexB], latAccuracy[indexC], latAccuracy[indexD], X, Y));
+      gs.setLatAccuracySeconds(interpolate(latAccuracy[indexA], latAccuracy[indexB], latAccuracy[indexC], latAccuracy[indexD], x, y));
     }
   }
 
@@ -304,12 +305,12 @@ public class NTv2SubGrid implements Cloneable, Serializable {
    */
   @Override
   public Object clone() throws CloneNotSupportedException {
-    NTv2SubGrid clone = (NTv2SubGrid)super.clone();
+    NTv2SubGrid clone = (NTv2SubGrid) super.clone();
     // Do a deep clone of the sub grids
     if (subGrid != null) {
       clone.subGrid = new NTv2SubGrid[subGrid.length];
       for (int i = 0; i < subGrid.length; i++) {
-        clone.subGrid[i] = (NTv2SubGrid)subGrid[i].clone();
+        clone.subGrid[i] = (NTv2SubGrid) subGrid[i].clone();
       }
     }
     return clone;
